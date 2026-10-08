@@ -1,0 +1,53 @@
+"""
+Test suggestion router.
+
+Endpoint: POST /api/suggest-tests
+Suggests appropriate tests for a proposed change.
+"""
+
+from fastapi import APIRouter, HTTPException
+
+from app.models.schemas import TestSuggestRequest, TestSuggestResponse
+from app.services.github_client import github_client
+from app.services.ai_service import ai_service
+
+router = APIRouter()
+
+
+@router.post("/suggest-tests", response_model=TestSuggestResponse)
+async def suggest_tests(request: TestSuggestRequest):
+    """
+    Suggest tests for a proposed change to address a GitHub issue.
+
+    Uses Gemma 4 to recommend test framework, test cases,
+    and example test code.
+    """
+    try:
+        # Fetch issue and repo context
+        issue_data = await github_client.get_issue(
+            request.repo_url, request.issue_number
+        )
+        file_tree = await github_client.get_file_tree(request.repo_url)
+
+        # Generate test suggestions with AI
+        tests = await ai_service.suggest_tests(
+            issue_title=issue_data["title"],
+            issue_body=issue_data.get("body", ""),
+            plan=request.plan,
+            file_tree=file_tree,
+        )
+
+        return TestSuggestResponse(
+            issue_number=request.issue_number,
+            test_framework=tests.get("test_framework", ""),
+            test_cases=tests.get("test_cases", []),
+            example_code=tests.get("example_code", ""),
+        )
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to suggest tests: {str(e)}",
+        )
