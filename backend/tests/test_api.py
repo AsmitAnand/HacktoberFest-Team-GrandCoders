@@ -26,3 +26,15 @@ def test_root_endpoint():
     assert "🎃 Hacktoberfest Copilot API" in data.get("message", "")
     assert "/docs" in data.get("docs", "")
     assert "/api/health" in data.get("health", "")
+
+
+def test_not_found_endpoint():
+    """Verify 404 response for unknown routes."""
+    response = client.get("/api/unknown-route-12345")
+    assert response.status_code == 404
+
+
+def test_analyze_repo_invalid_payload():
+    """Verify 422 Unprocessable Entity when request body is missing required fields."""
+    response = client.post("/api/analyze-repo", json={})
+    assert response.status_code == 422

@@ -7,10 +7,12 @@ This module creates and configures the FastAPI application with:
 - Health check endpoint
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.exceptions import AppException
 from app.routers import repo, issues, plan, pr, tests
 
 # ─── App Setup ───────────────────────────────────────────────────────
@@ -35,6 +37,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ─── Exception Handlers ──────────────────────────────────────────────
+
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException):
+    """Handle all custom application exceptions uniformly."""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": exc.error_code,
+            "message": exc.message,
+            "details": exc.details,
+            "path": request.url.path,
+        },
+    )
 
 # ─── Register Routers ───────────────────────────────────────────────
 
