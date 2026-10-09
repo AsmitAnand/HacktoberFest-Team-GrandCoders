@@ -59,6 +59,10 @@ Paste any GitHub repository URL and the assistant will:
 
 ## 🎬 Visual Walkthrough & Demo
 
+<p align="center">
+  <img src="docs/assets/demo-preview.svg" alt="Hacktoberfest Copilot Demo Walkthrough" width="92%" />
+</p>
+
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │ 1. LANDING PAGE                                                       │
