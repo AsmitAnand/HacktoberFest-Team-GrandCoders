@@ -50,11 +50,15 @@ Paste any GitHub repository URL and the assistant will:
 |---------|-------------|
 | 🔍 **Issue Discovery** | Identify beginner-friendly issues with difficulty ratings |
 | 📊 **Skill Matching** | Categorize issues by required skills and estimated difficulty |
+| 🔎 **Interactive Search & Filters** | Real-time issue searching and difficulty filter pills (#29) |
+| 🌓 **Dark & Light Themes** | Accessible dual-theme system with persistent storage (#30) |
 | 🧠 **Plain-Language Explanations** | Rewrite complex issues in beginner-friendly language |
 | 📁 **File Mapping** | Identify the exact files and components involved |
 | 🛠️ **Step-by-Step Plans** | Generate a detailed implementation plan |
-| 🧪 **Test Suggestions** | Recommend appropriate tests for proposed changes |
+| 🧪 **Test Suggestions** | Recommend appropriate tests & scaffolding for proposed changes |
 | 📝 **PR Generation** | Draft a professional pull request description |
+| 🚀 **Interactive PR Checklist** | Pre-flight readiness score & live GitHub PR launcher (#31) |
+| 📥 **Roadmap Export** | Download comprehensive roadmap as Markdown (.md) or printable PDF (#32) |
 | 💡 **Code Explanation** | Explain unfamiliar code and technologies |
 
 ## 🎬 Visual Walkthrough & Demo
@@ -192,6 +196,25 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 # From the project root
 docker-compose up --build
 ```
+
+## 🌐 Live Cloud Deployment Guide
+
+Hacktoberfest Copilot is engineered for 1-click zero-config deployment to modern cloud infrastructure:
+
+### 1. Frontend on Vercel
+1. Import repository to **[Vercel](https://vercel.com/)**.
+2. Set Root Directory to `frontend`.
+3. Configure Environment Variable:
+   - `NEXT_PUBLIC_API_URL`: URL of your deployed backend (e.g. `https://your-backend.railway.app`).
+4. Click **Deploy**.
+
+### 2. Backend on Railway or Render
+1. Deploy using the included `backend/Dockerfile` or `backend/render.yaml` / `backend/railway.json`.
+2. Configure Environment Variables:
+   - `GOOGLE_API_KEY`: Your Google AI Studio API key.
+   - `APP_ENV`: `production`
+   - `CORS_ORIGINS`: `https://your-frontend.vercel.app`
+3. Verify health status: `GET /api/health` returns `{"status": "healthy"}`.
 
 ## 📁 Project Structure
 
