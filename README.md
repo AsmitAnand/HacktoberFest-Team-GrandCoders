@@ -57,6 +57,39 @@ Paste any GitHub repository URL and the assistant will:
 | 📝 **PR Generation** | Draft a professional pull request description |
 | 💡 **Code Explanation** | Explain unfamiliar code and technologies |
 
+## 🎬 Visual Walkthrough & Demo
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ 1. LANDING PAGE                                                       │
+│    Enter public GitHub repository URL (e.g. facebook/react)           │
+│    [ https://github.com/facebook/react                     ] [ Analyze ]│
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ 2. REPO DASHBOARD                                                      │
+│    Tech Stack: JavaScript, C++, Flow | Good First Issues: 12 Detected  │
+│    ┌────────────────────────────────────────────────────────────────┐  │
+│    │ Issue #2841: Fix typo in documentation                          │  │
+│    │ Difficulty: Beginner | Skills: Markdown, Git                   │  │
+│    └──────────────────────────────┬─────────────────────────────────┘  │
+└───────────────────────────────────┼────────────────────────────────────┘
+                                    │ Click Issue
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ 3. AI GUIDANCE HUB (Gemma 4 Powered)                                  │
+│    [🧠 Understand]   [🗺️ Implementation Plan]   [🧪 Tests]   [📝 PR]  │
+│    ├─ Plain-English Breakdown & Jargon Explanations                   │
+│    ├─ Targeted File Tree & Component Pointers                         │
+│    ├─ Step-by-Step Action Roadmap & PR Checklist                      │
+│    ├─ Recommended Test Framework & Unit Test Scaffolding              │
+│    └─ 1-Click Copy Markdown PR Description Ready for GitHub           │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+> 📚 **API Documentation:** Check out our [API Documentation Guide](docs/API.md) and import the [Postman Collection](docs/Hacktoberfest_Copilot.postman_collection.json) to test the backend endpoints directly.
+
 ## 🏗️ Architecture
 
 ```

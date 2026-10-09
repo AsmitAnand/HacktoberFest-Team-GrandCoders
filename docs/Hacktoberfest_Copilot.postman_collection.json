@@ -1,0 +1,143 @@
+{
+  "info": {
+    "_postman_id": "c8a4192b-87cf-4389-9832-75d1f868d401",
+    "name": "Hacktoberfest Copilot API",
+    "description": "Complete collection of REST API requests for Hacktoberfest Copilot backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "sampleRepo",
+      "value": "https://github.com/AsmitAnand/HacktoberFest-Team-GrandCoders",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Check if API is running and healthy."
+      }
+    },
+    {
+      "name": "Root Welcome",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        },
+        "description": "Get API status and documentation links."
+      }
+    },
+    {
+      "name": "Analyze Repository",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"repo_url\": \"{{sampleRepo}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/analyze-repo",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "analyze-repo"]
+        },
+        "description": "Analyze GitHub repository structure and find beginner issues."
+      }
+    },
+    {
+      "name": "Explain Issue",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"repo_url\": \"{{sampleRepo}}\",\n  \"issue_number\": 10\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/explain-issue",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "explain-issue"]
+        },
+        "description": "Simplify issue description and determine difficulty."
+      }
+    },
+    {
+      "name": "Generate Implementation Plan",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"repo_url\": \"{{sampleRepo}}\",\n  \"issue_number\": 10\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/generate-plan",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "generate-plan"]
+        },
+        "description": "Generate step-by-step contribution plan."
+      }
+    },
+    {
+      "name": "Suggest Tests",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"repo_url\": \"{{sampleRepo}}\",\n  \"issue_number\": 13,\n  \"plan\": \"Add unit tests for health check and API endpoints\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/suggest-tests",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "suggest-tests"]
+        },
+        "description": "Recommend test framework, test cases, and example test code."
+      }
+    },
+    {
+      "name": "Generate PR Description",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"repo_url\": \"{{sampleRepo}}\",\n  \"issue_number\": 13,\n  \"changes_summary\": \"Added test suggestion endpoint with pytest suite\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/generate-pr",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "generate-pr"]
+        },
+        "description": "Draft Pull Request title and description."
+      }
+    }
+  ]
+}
