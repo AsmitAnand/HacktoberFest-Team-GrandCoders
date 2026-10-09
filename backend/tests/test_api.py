@@ -68,3 +68,34 @@ def test_generate_pr_invalid_url():
         json={"repo_url": "invalid-url", "issue_number": 1, "changes_summary": "test"},
     )
     assert response.status_code in [400, 404, 500, 502]
+
+
+def test_explain_issue_invalid_payload():
+    """Verify 422 Unprocessable Entity when explain-issue payload is invalid."""
+    response = client.post("/api/explain-issue", json={})
+    assert response.status_code == 422
+
+
+def test_explain_issue_invalid_url():
+    """Verify error status when explain-issue URL is malformed."""
+    response = client.post(
+        "/api/explain-issue",
+        json={"repo_url": "invalid-url", "issue_number": 1},
+    )
+    assert response.status_code in [400, 404, 500, 502]
+
+
+def test_generate_plan_invalid_payload():
+    """Verify 422 Unprocessable Entity when generate-plan payload is invalid."""
+    response = client.post("/api/generate-plan", json={})
+    assert response.status_code == 422
+
+
+def test_generate_plan_invalid_url():
+    """Verify error status when generate-plan URL is malformed."""
+    response = client.post(
+        "/api/generate-plan",
+        json={"repo_url": "invalid-url", "issue_number": 1},
+    )
+    assert response.status_code in [400, 404, 500, 502]
+

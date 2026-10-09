@@ -5,9 +5,10 @@ Endpoint: POST /api/explain-issue
 Explains a GitHub issue in beginner-friendly language using Gemma 4.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from app.models.schemas import IssueExplainRequest, IssueExplainResponse, IssueInfo
+from app.exceptions import AppException, ResourceNotFoundError, GitHubAPIError, AIServiceError
 from app.services.github_client import github_client
 from app.services.ai_service import ai_service
 
@@ -51,9 +52,12 @@ async def explain_issue(request: IssueExplainRequest):
         )
 
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise ResourceNotFoundError(str(e))
+    except AppException:
+        raise
     except Exception as e:
-        raise HTTPException(
+        raise AppException(
+            message=f"Failed to explain issue: {str(e)}",
             status_code=500,
-            detail=f"Failed to explain issue: {str(e)}",
+            error_code="ISSUE_EXPLAIN_ERROR",
         )

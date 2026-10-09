@@ -5,9 +5,10 @@ Endpoint: POST /api/generate-plan
 Generates a step-by-step implementation plan for a GitHub issue.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from app.models.schemas import PlanGenerateRequest, PlanGenerateResponse
+from app.exceptions import AppException, ResourceNotFoundError, GitHubAPIError, AIServiceError
 from app.services.github_client import github_client
 from app.services.ai_service import ai_service
 
@@ -50,9 +51,12 @@ async def generate_plan(request: PlanGenerateRequest):
         )
 
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise ResourceNotFoundError(str(e))
+    except AppException:
+        raise
     except Exception as e:
-        raise HTTPException(
+        raise AppException(
+            message=f"Failed to generate plan: {str(e)}",
             status_code=500,
-            detail=f"Failed to generate plan: {str(e)}",
+            error_code="PLAN_GENERATE_ERROR",
         )
