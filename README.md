@@ -57,6 +57,43 @@ Paste any GitHub repository URL and the assistant will:
 | 📝 **PR Generation** | Draft a professional pull request description |
 | 💡 **Code Explanation** | Explain unfamiliar code and technologies |
 
+## 🎬 Visual Walkthrough & Demo
+
+<p align="center">
+  <img src="docs/assets/demo-preview.svg" alt="Hacktoberfest Copilot Demo Walkthrough" width="92%" />
+</p>
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ 1. LANDING PAGE                                                       │
+│    Enter public GitHub repository URL (e.g. facebook/react)           │
+│    [ https://github.com/facebook/react                     ] [ Analyze ]│
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ 2. REPO DASHBOARD                                                      │
+│    Tech Stack: JavaScript, C++, Flow | Good First Issues: 12 Detected  │
+│    ┌────────────────────────────────────────────────────────────────┐  │
+│    │ Issue #2841: Fix typo in documentation                          │  │
+│    │ Difficulty: Beginner | Skills: Markdown, Git                   │  │
+│    └──────────────────────────────┬─────────────────────────────────┘  │
+└───────────────────────────────────┼────────────────────────────────────┘
+                                    │ Click Issue
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ 3. AI GUIDANCE HUB (Gemma 4 Powered)                                  │
+│    [🧠 Understand]   [🗺️ Implementation Plan]   [🧪 Tests]   [📝 PR]  │
+│    ├─ Plain-English Breakdown & Jargon Explanations                   │
+│    ├─ Targeted File Tree & Component Pointers                         │
+│    ├─ Step-by-Step Action Roadmap & PR Checklist                      │
+│    ├─ Recommended Test Framework & Unit Test Scaffolding              │
+│    └─ 1-Click Copy Markdown PR Description Ready for GitHub           │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+> 📚 **API Documentation:** Check out our [API Documentation Guide](docs/API.md) and import the [Postman Collection](docs/Hacktoberfest_Copilot.postman_collection.json) to test the backend endpoints directly.
+
 ## 🏗️ Architecture
 
 ```
@@ -206,13 +243,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
 ## 👥 Team GrandCoders
 
-| Name | Role | GitHub |
-|------|------|--------|
-| **Asmit Anand** | Lead + Backend | [@AsmitAnand](https://github.com/AsmitAnand) |
-| **Kartikeya Sorout** | Frontend Lead | [@KartikeyaSorout](https://github.com/KartikeyaSorout) |
-| **Khushhal Kumar Bansal** | Full-Stack + DevOps | [@Khushhalbansal](https://github.com/Khushhalbansal) |
+| Name | Role | College | GitHub | Email |
+|------|------|---------|--------|-------|
+| **Asmit Anand** | Lead & Backend | Manipal University Jaipur | [@AsmitAnand](https://github.com/AsmitAnand) | asmitanand2006@gmail.com |
+| **Kartikeya Sorout** | Frontend Lead | Manipal University Jaipur | [@KartikeyaSorout](https://github.com/KartikeyaSorout) | kartikeyasorout@gmail.com |
+| **Khushhal Kumar Bansal** | Full-Stack & DevOps | Manipal University Jaipur | [@Khushhalbansal](https://github.com/Khushhalbansal) | khushhalbansalb2@gmail.com |
 
-> **Note:** Team details will be updated once all members are confirmed.
 
 ## 📄 License
 

@@ -5,7 +5,7 @@ Endpoint: POST /api/analyze-repo
 Analyzes a GitHub repository and returns structured information.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from app.models.schemas import (
     RepoAnalyzeRequest,
@@ -14,6 +14,7 @@ from app.models.schemas import (
     FileTreeItem,
     IssueInfo,
 )
+from app.exceptions import AppException, ResourceNotFoundError, GitHubAPIError, AIServiceError
 from app.services.github_client import github_client
 from app.services.ai_service import ai_service
 
@@ -60,11 +61,14 @@ async def analyze_repo(request: RepoAnalyzeRequest):
         )
 
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise ResourceNotFoundError(str(e))
+    except AppException:
+        raise
     except Exception as e:
-        raise HTTPException(
+        raise AppException(
+            message=f"Failed to analyze repository: {str(e)}",
             status_code=500,
-            detail=f"Failed to analyze repository: {str(e)}",
+            error_code="REPO_ANALYZE_ERROR",
         )
 
 

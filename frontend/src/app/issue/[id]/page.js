@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Toast from '../../../components/Toast';
 
 function IssueContent({ params }) {
   const issueNumber = params.id;
@@ -13,14 +14,18 @@ function IssueContent({ params }) {
   const [activeTab, setActiveTab] = useState('understand');
   const [explainData, setExplainData] = useState(null);
   const [planData, setPlanData] = useState(null);
+  const [testsData, setTestsData] = useState(null);
   const [prData, setPrData] = useState(null);
-  
+
   const [loadingExplain, setLoadingExplain] = useState(true);
   const [loadingPlan, setLoadingPlan] = useState(false);
+  const [loadingTests, setLoadingTests] = useState(false);
   const [loadingPr, setLoadingPr] = useState(false);
-  
+
   const [error, setError] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [copiedPr, setCopiedPr] = useState(false);
+  const [copiedTest, setCopiedTest] = useState(false);
+  const [toast, setToast] = useState(null);
 
   // Initial fetch for explanation
   useEffect(() => {
@@ -42,6 +47,7 @@ function IssueContent({ params }) {
         setExplainData(result);
       } catch (err) {
         setError(err.message);
+        setToast({ message: err.message || 'Failed to load explanation.', type: 'error' });
       } finally {
         setLoadingExplain(false);
       }
@@ -65,8 +71,34 @@ function IssueContent({ params }) {
       setPlanData(result);
     } catch (err) {
       console.error(err);
+      setToast({ message: 'Failed to generate plan.', type: 'error' });
     } finally {
       setLoadingPlan(false);
+    }
+  };
+
+  // Fetch tests when tab is clicked
+  const loadTests = async () => {
+    if (testsData || loadingTests) return;
+    setLoadingTests(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/suggest-tests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repo_url: repoUrl,
+          issue_number: parseInt(issueNumber),
+          plan: planData?.approach || '',
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to generate test suggestions.');
+      const result = await response.json();
+      setTestsData(result);
+    } catch (err) {
+      console.error(err);
+      setToast({ message: 'Failed to load test suggestions.', type: 'error' });
+    } finally {
+      setLoadingTests(false);
     }
   };
 
@@ -85,6 +117,7 @@ function IssueContent({ params }) {
       setPrData(result);
     } catch (err) {
       console.error(err);
+      setToast({ message: 'Failed to generate PR description.', type: 'error' });
     } finally {
       setLoadingPr(false);
     }
@@ -93,14 +126,25 @@ function IssueContent({ params }) {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     if (tab === 'plan') loadPlan();
+    if (tab === 'tests') loadTests();
     if (tab === 'pr') loadPr();
   };
 
   const copyToClipboard = () => {
     if (prData?.body) {
       navigator.clipboard.writeText(prData.body);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedPr(true);
+      setToast({ message: 'PR description copied to clipboard!', type: 'success' });
+      setTimeout(() => setCopiedPr(false), 2000);
+    }
+  };
+
+  const copyTestCode = () => {
+    if (testsData?.example_code) {
+      navigator.clipboard.writeText(testsData.example_code);
+      setCopiedTest(true);
+      setToast({ message: 'Test code copied to clipboard!', type: 'success' });
+      setTimeout(() => setCopiedTest(false), 2000);
     }
   };
 
@@ -167,6 +211,12 @@ function IssueContent({ params }) {
             🗺️ Implementation Plan
           </button>
           <button 
+            className={`tabs__tab ${activeTab === 'tests' ? 'tabs__tab--active' : ''}`}
+            onClick={() => handleTabClick('tests')}
+          >
+            🧪 Test Suggestions
+          </button>
+          <button 
             className={`tabs__tab ${activeTab === 'pr' ? 'tabs__tab--active' : ''}`}
             onClick={() => handleTabClick('pr')}
           >
@@ -187,7 +237,7 @@ function IssueContent({ params }) {
               ))}
             </div>
 
-            {Object.keys(explainData.jargon_explained).length > 0 && (
+            {Object.keys(explainData.jargon_explained || {}).length > 0 && (
               <>
                 <h3>Jargon Dictionary</h3>
                 <ul>
@@ -200,7 +250,7 @@ function IssueContent({ params }) {
               </>
             )}
 
-            {explainData.relevant_files.length > 0 && (
+            {explainData.relevant_files?.length > 0 && (
               <>
                 <h3>Where to look</h3>
                 <div className="file-tree">
@@ -230,7 +280,7 @@ function IssueContent({ params }) {
 
                 <h3>Step-by-Step Instructions</h3>
                 <ol>
-                  {planData.steps.map((step, i) => (
+                  {planData.steps?.map((step, i) => (
                     <li key={i}>{step}</li>
                   ))}
                 </ol>
@@ -240,13 +290,64 @@ function IssueContent({ params }) {
 
                 <h3>PR Checklist</h3>
                 <ul>
-                  {planData.pr_checklist.map((item, i) => (
+                  {planData.pr_checklist?.map((item, i) => (
                     <li key={i}>⬜ {item}</li>
                   ))}
                 </ul>
               </>
             ) : (
               <p>Failed to load plan.</p>
+            )}
+          </div>
+        )}
+
+        {/* TESTS TAB */}
+        {activeTab === 'tests' && (
+          <div className="tabs__panel ai-content">
+            {loadingTests ? (
+              <div className="loading">
+                <div className="loading__spinner" />
+                <div className="loading__text">Designing test suites and examples with Gemma 4...</div>
+              </div>
+            ) : testsData ? (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3>Recommended Test Framework</h3>
+                  {testsData.test_framework && (
+                    <span className="tag tag--tech">{testsData.test_framework}</span>
+                  )}
+                </div>
+
+                <h3>Recommended Test Cases</h3>
+                {testsData.test_cases?.length > 0 ? (
+                  <ul>
+                    {testsData.test_cases.map((tc, i) => (
+                      <li key={i}>🧪 {tc}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No specific test cases generated.</p>
+                )}
+
+                {testsData.example_code && (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                      <h3>Example Test Code</h3>
+                      <button 
+                        className={`copy-btn ${copiedTest ? 'copy-btn--copied' : ''}`}
+                        onClick={copyTestCode}
+                      >
+                        {copiedTest ? '✓ Copied!' : '📋 Copy Test Code'}
+                      </button>
+                    </div>
+                    <pre style={{ marginTop: '0.75rem', whiteSpace: 'pre-wrap' }}>
+                      <code>{testsData.example_code}</code>
+                    </pre>
+                  </>
+                )}
+              </>
+            ) : (
+              <p>Failed to generate test suggestions.</p>
             )}
           </div>
         )}
@@ -264,10 +365,10 @@ function IssueContent({ params }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3>Generated Pull Request</h3>
                   <button 
-                    className={`copy-btn ${copied ? 'copy-btn--copied' : ''}`}
+                    className={`copy-btn ${copiedPr ? 'copy-btn--copied' : ''}`}
                     onClick={copyToClipboard}
                   >
-                    {copied ? '✓ Copied!' : '📋 Copy Markdown'}
+                    {copiedPr ? '✓ Copied!' : '📋 Copy Markdown'}
                   </button>
                 </div>
                 
@@ -283,6 +384,14 @@ function IssueContent({ params }) {
           </div>
         )}
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
