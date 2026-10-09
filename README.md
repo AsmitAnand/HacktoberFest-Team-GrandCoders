@@ -24,6 +24,20 @@
 </p>
 
 <p align="center">
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAsmitAnand%2FHacktoberFest-Team-GrandCoders&root-directory=frontend&env=NEXT_PUBLIC_API_URL&envDescription=Backend%20API%20URL">
+    <img src="https://vercel.com/button" alt="Deploy with Vercel" />
+  </a>
+  &nbsp;
+  <a href="https://railway.app/template">
+    <img src="https://railway.app/button.svg" alt="Deploy on Railway" />
+  </a>
+  &nbsp;
+  <a href="https://render.com/deploy?repo=https://github.com/AsmitAnand/HacktoberFest-Team-GrandCoders">
+    <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render" />
+  </a>
+</p>
+
+<p align="center">
   <em>Turn "I want to contribute to open source" into "I have a plan and I'm ready to submit a PR."</em>
 </p>
 
