@@ -32,7 +32,7 @@ export default function Home() {
         </h1>
 
         <p className="hero__subtitle">
-          Don't know where to start? Hacktoberfest Copilot analyzes any repository,
+          Don&apos;t know where to start? Hacktoberfest Copilot analyzes any repository,
           finds beginner-friendly issues, and generates a step-by-step plan to
           help you create your first pull request.
         </p>
@@ -120,7 +120,7 @@ export default function Home() {
             <div className="step__content">
               <h3 className="step__title">Find a Repository</h3>
               <p className="step__desc">
-                Paste the URL of any public GitHub repository you'd like to
+                Paste the URL of any public GitHub repository you&apos;d like to
                 contribute to.
               </p>
             </div>
