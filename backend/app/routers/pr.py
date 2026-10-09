@@ -8,6 +8,7 @@ Generates a professional pull request description for a GitHub issue.
 from fastapi import APIRouter, HTTPException
 
 from app.models.schemas import PRGenerateRequest, PRGenerateResponse
+from app.exceptions import AppException, ResourceNotFoundError, GitHubAPIError, AIServiceError
 from app.services.github_client import github_client
 from app.services.ai_service import ai_service
 
@@ -45,9 +46,12 @@ async def generate_pr(request: PRGenerateRequest):
         )
 
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise ResourceNotFoundError(str(e))
+    except AppException:
+        raise
     except Exception as e:
-        raise HTTPException(
+        raise AppException(
+            message=f"Failed to generate PR description: {str(e)}",
             status_code=500,
-            detail=f"Failed to generate PR description: {str(e)}",
+            error_code="PR_GENERATION_ERROR",
         )
