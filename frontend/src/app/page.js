@@ -100,11 +100,29 @@ export default function Home() {
           </div>
 
           <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">📝</span>
-            <h3 className="feature-card__title">PR Generation</h3>
+            <span className="feature-card__icon" aria-hidden="true">🧪</span>
+            <h3 className="feature-card__title">Test Suggestions</h3>
             <p className="feature-card__desc">
-              Generate a professional pull request description automatically,
-              so your contribution looks polished and ready to merge.
+              Get recommended test frameworks, targeted test cases, and runnable code scaffolding
+              to verify changes locally.
+            </p>
+          </div>
+
+          <div className="feature-card animate-fade-in-up">
+            <span className="feature-card__icon" aria-hidden="true">🚀</span>
+            <h3 className="feature-card__title">PR Checklist & Preview</h3>
+            <p className="feature-card__desc">
+              Verify pre-flight contribution readiness with an interactive checklist and
+              generate ready-to-merge PR descriptions.
+            </p>
+          </div>
+
+          <div className="feature-card animate-fade-in-up">
+            <span className="feature-card__icon" aria-hidden="true">📥</span>
+            <h3 className="feature-card__title">Roadmap Export</h3>
+            <p className="feature-card__desc">
+              Export and share your entire customized AI contribution roadmap as a clean
+              Markdown (.md) file or printable PDF.
             </p>
           </div>
         </div>
