@@ -12,4 +12,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Command is handled by docker-compose
+# Default command to run FastAPI app with uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
