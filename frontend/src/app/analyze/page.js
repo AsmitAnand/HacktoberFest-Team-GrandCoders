@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -12,6 +12,10 @@ function AnalyzeContent() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Search & Filter state (Issue #29)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('ALL');
 
   useEffect(() => {
     if (!repoUrl) {
@@ -42,6 +46,65 @@ function AnalyzeContent() {
 
     fetchRepoData();
   }, [repoUrl, router]);
+
+  // Derive difficulty and filtered issues
+  const allIssues = useMemo(() => {
+    if (!data?.beginner_issues) return [];
+    return data.beginner_issues.map((issue) => {
+      // Determine level based on labels or content
+      const labelNames = (issue.labels || []).map((l) => (typeof l === 'string' ? l.toLowerCase() : ''));
+      let difficulty = 'BEGINNER';
+      if (labelNames.some((l) => l.includes('hard') || l.includes('advanced') || l.includes('expert'))) {
+        difficulty = 'ADVANCED';
+      } else if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted'))) {
+        difficulty = 'INTERMEDIATE';
+      } else if (labelNames.some((l) => l.includes('good first') || l.includes('beginner') || l.includes('easy') || l.includes('starter'))) {
+        difficulty = 'BEGINNER';
+      }
+      return {
+        ...issue,
+        difficulty,
+      };
+    });
+  }, [data]);
+
+  // Compute counts per category
+  const difficultyCounts = useMemo(() => {
+    const counts = {
+      ALL: allIssues.length,
+      BEGINNER: 0,
+      INTERMEDIATE: 0,
+      ADVANCED: 0,
+    };
+    allIssues.forEach((issue) => {
+      if (counts[issue.difficulty] !== undefined) {
+        counts[issue.difficulty] += 1;
+      } else {
+        counts.BEGINNER += 1;
+      }
+    });
+    return counts;
+  }, [allIssues]);
+
+  // Filtered issues based on query & difficulty
+  const filteredIssues = useMemo(() => {
+    return allIssues.filter((issue) => {
+      const matchesDifficulty = selectedDifficulty === 'ALL' || issue.difficulty === selectedDifficulty;
+      if (!matchesDifficulty) return false;
+
+      if (!searchQuery.trim()) return true;
+
+      const q = searchQuery.toLowerCase();
+      const titleMatch = issue.title?.toLowerCase().includes(q);
+      const bodyMatch = issue.body?.toLowerCase().includes(q);
+      const labelMatch = (issue.labels || []).some((l) => 
+        (typeof l === 'string' ? l.toLowerCase() : '').includes(q)
+      );
+      const numberMatch = String(issue.number).includes(q);
+
+      return titleMatch || bodyMatch || labelMatch || numberMatch;
+    });
+  }, [allIssues, searchQuery, selectedDifficulty]);
 
   if (loading) {
     return (
@@ -80,13 +143,14 @@ function AnalyzeContent() {
         ← Back to Search
       </Link>
 
+      {/* Repo Summary Card */}
       <div className="repo-card">
         <div className="repo-card__header">
           <h1 className="repo-card__name">{data.repo.full_name}</h1>
           <div className="repo-card__stats">
-            <span className="repo-card__stat">⭐ {data.repo.stars} stars</span>
-            <span className="repo-card__stat">🍴 {data.repo.forks} forks</span>
-            <span className="repo-card__stat">🟢 {data.repo.open_issues_count} issues</span>
+            <span className="repo-card__stat">⭐ {data.repo.stars?.toLocaleString() || 0} stars</span>
+            <span className="repo-card__stat">🍴 {data.repo.forks?.toLocaleString() || 0} forks</span>
+            <span className="repo-card__stat">🟢 {data.repo.open_issues_count?.toLocaleString() || 0} issues</span>
           </div>
         </div>
 
@@ -98,7 +162,7 @@ function AnalyzeContent() {
           {data.repo.language && (
             <span className="tag tag--tech">{data.repo.language}</span>
           )}
-          {data.tech_stack.map((tech) => (
+          {data.tech_stack?.map((tech) => (
             <span key={tech} className="tag tag--tech">
               {tech}
             </span>
@@ -106,21 +170,100 @@ function AnalyzeContent() {
         </div>
       </div>
 
+      {/* Interactive Search & Difficulty Filters Section */}
+      <div className="filter-panel">
+        <div className="filter-search-box">
+          <span className="filter-search-icon">🔍</span>
+          <input
+            type="text"
+            className="filter-search-input"
+            placeholder="Search issues by title, body, label, or #number..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            id="issue-search-input"
+          />
+          {searchQuery && (
+            <button
+              className="filter-search-clear"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        <div className="filter-pills-row">
+          <button
+            className={`filter-pill ${selectedDifficulty === 'ALL' ? 'filter-pill--active' : ''}`}
+            onClick={() => setSelectedDifficulty('ALL')}
+          >
+            All Issues <span className="filter-pill__count">{difficultyCounts.ALL}</span>
+          </button>
+          <button
+            className={`filter-pill filter-pill--beginner ${selectedDifficulty === 'BEGINNER' ? 'filter-pill--active' : ''}`}
+            onClick={() => setSelectedDifficulty('BEGINNER')}
+          >
+            🌱 Beginner (Good First Issue) <span className="filter-pill__count">{difficultyCounts.BEGINNER}</span>
+          </button>
+          <button
+            className={`filter-pill filter-pill--intermediate ${selectedDifficulty === 'INTERMEDIATE' ? 'filter-pill--active' : ''}`}
+            onClick={() => setSelectedDifficulty('INTERMEDIATE')}
+          >
+            ⚡ Intermediate <span className="filter-pill__count">{difficultyCounts.INTERMEDIATE}</span>
+          </button>
+          <button
+            className={`filter-pill filter-pill--advanced ${selectedDifficulty === 'ADVANCED' ? 'filter-pill--active' : ''}`}
+            onClick={() => setSelectedDifficulty('ADVANCED')}
+          >
+            🔥 Advanced <span className="filter-pill__count">{difficultyCounts.ADVANCED}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Issues List Section */}
       <div className="issues-section">
-        <h2 className="issues-section__title">
-          🎯 Beginner-Friendly Issues
-          <span className="tag tag--beginner">
-            {data.beginner_issues.length} Found
-          </span>
-        </h2>
+        <div className="issues-section__header-row">
+          <h2 className="issues-section__title">
+            🎯 Filtered Contribution Opportunities
+            <span className="tag tag--beginner">
+              {filteredIssues.length} Shown
+            </span>
+          </h2>
+          {(searchQuery || selectedDifficulty !== 'ALL') && (
+            <button
+              className="filter-reset-btn"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedDifficulty('ALL');
+              }}
+            >
+              Reset Filters
+            </button>
+          )}
+        </div>
         
-        {data.beginner_issues.length === 0 ? (
-          <p style={{ color: 'var(--color-text-secondary)', marginTop: '1rem' }}>
-            No issues specifically labeled for beginners were found. Try looking at all issues.
-          </p>
+        {filteredIssues.length === 0 ? (
+          <div className="empty-filter-card animate-fade-in">
+            <span className="empty-filter-icon">🔍</span>
+            <h3>No matching issues found</h3>
+            <p>
+              We couldn&apos;t find any issues matching &ldquo;<strong>{searchQuery}</strong>&rdquo; under the{' '}
+              <strong>{selectedDifficulty.toLowerCase()}</strong> difficulty filter.
+            </p>
+            <button
+              className="empty-filter-btn"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedDifficulty('ALL');
+              }}
+            >
+              Clear All Filters
+            </button>
+          </div>
         ) : (
           <div className="issue-list stagger-children">
-            {data.beginner_issues.map((issue) => (
+            {filteredIssues.map((issue) => (
               <Link 
                 href={`/issue/${issue.number}?url=${encodeURIComponent(repoUrl)}`} 
                 key={issue.number}
@@ -128,15 +271,20 @@ function AnalyzeContent() {
               >
                 <div className="issue-card__header">
                   <h3 className="issue-card__title">{issue.title}</h3>
-                  <span className="issue-card__number">#{issue.number}</span>
+                  <div className="issue-card__badge-group">
+                    <span className={`tag tag--${issue.difficulty.toLowerCase()}`}>
+                      {issue.difficulty}
+                    </span>
+                    <span className="issue-card__number">#{issue.number}</span>
+                  </div>
                 </div>
                 <div className="issue-card__body">
                   {issue.body || 'No description provided.'}
                 </div>
                 <div className="issue-card__footer">
-                  {issue.labels.map((label) => (
-                    <span key={label} className="tag tag--label">
-                      {label}
+                  {issue.labels?.map((label) => (
+                    <span key={typeof label === 'string' ? label : label.name} className="tag tag--label">
+                      {typeof label === 'string' ? label : label.name}
                     </span>
                   ))}
                 </div>
