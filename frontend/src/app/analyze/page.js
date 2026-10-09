@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function AnalyzePage() {
+function AnalyzeContent() {
   const searchParams = useSearchParams();
   const repoUrl = searchParams.get('url');
   const router = useRouter();
@@ -146,5 +146,22 @@ export default function AnalyzePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AnalyzePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container dashboard">
+          <div className="loading animate-fade-in">
+            <div className="loading__spinner" />
+            <h2 className="loading__text">Loading analysis...</h2>
+          </div>
+        </div>
+      }
+    >
+      <AnalyzeContent />
+    </Suspense>
   );
 }
