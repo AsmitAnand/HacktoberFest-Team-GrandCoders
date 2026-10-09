@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function IssuePage({ params }) {
+function IssueContent({ params }) {
   const issueNumber = params.id;
   const searchParams = useSearchParams();
   const repoUrl = searchParams.get('url');
@@ -284,5 +284,22 @@ export default function IssuePage({ params }) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function IssuePage({ params }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="container issue-detail">
+          <div className="loading animate-fade-in">
+            <div className="loading__spinner" />
+            <h2 className="loading__text">Loading issue guidance...</h2>
+          </div>
+        </div>
+      }
+    >
+      <IssueContent params={params} />
+    </Suspense>
   );
 }

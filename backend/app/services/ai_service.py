@@ -355,6 +355,7 @@ PR_CHECKLIST:
     ) -> dict:
         """Suggest tests for a proposed change."""
         context = self._build_context(file_tree=file_tree)
+        plan_section = f"## Implementation Plan\n{plan}" if plan else ""
 
         prompt = f"""You are an expert software testing mentor helping a beginner write tests.
 
@@ -365,7 +366,7 @@ PR_CHECKLIST:
 **Description:**
 {issue_body or 'No description provided.'}
 
-{f'## Implementation Plan\n{plan}' if plan else ''}
+{plan_section}
 
 ## Your Task
 Suggest appropriate tests for this change. Include:
@@ -463,15 +464,18 @@ EXAMPLE_CODE:
         contributing: str = "",
     ) -> dict:
         """Generate a pull request description."""
+        changes_section = f"## Changes Summary\n{changes_summary}" if changes_summary else ""
+        contributing_section = f"## Contributing Guidelines\n{contributing[:1000]}" if contributing else ""
+
         prompt = f"""You are an expert open-source contributor. Generate a professional PR description.
 
 ## Issue Being Addressed
 **Issue #{issue_number}: {issue_title}**
 {issue_body or 'No description provided.'}
 
-{f'## Changes Summary\n{changes_summary}' if changes_summary else ''}
+{changes_section}
 
-{f'## Contributing Guidelines\n{contributing[:1000]}' if contributing else ''}
+{contributing_section}
 
 ## Your Task
 Generate a pull request with:
