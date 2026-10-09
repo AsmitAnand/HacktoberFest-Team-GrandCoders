@@ -206,13 +206,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
 ## 👥 Team GrandCoders
 
-| Name | Role | GitHub |
-|------|------|--------|
-| **Asmit Anand** | Lead + Backend | [@AsmitAnand](https://github.com/AsmitAnand) |
-| **Kartikeya Sorout** | Frontend Lead | [@KartikeyaSorout](https://github.com/KartikeyaSorout) |
-| **Khushhal Kumar Bansal** | Full-Stack + DevOps | [@Khushhalbansal](https://github.com/Khushhalbansal) |
+| Name | Role | College | GitHub | Email |
+|------|------|---------|--------|-------|
+| **Asmit Anand** | Lead & Backend | Manipal University Jaipur | [@AsmitAnand](https://github.com/AsmitAnand) | asmitanand2006@gmail.com |
+| **Kartikeya Sorout** | Frontend Lead | Manipal University Jaipur | [@KartikeyaSorout](https://github.com/KartikeyaSorout) | kartikeyasorout@gmail.com |
+| **Khushhal Kumar Bansal** | Full-Stack & DevOps | Manipal University Jaipur | [@Khushhalbansal](https://github.com/Khushhalbansal) | khushhalbansalb2@gmail.com |
 
-> **Note:** Team details will be updated once all members are confirmed.
 
 ## 📄 License
 
