@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Toast from '@/components/Toast';
+import Toast from '../../../components/Toast';
 
 function IssueContent({ params }) {
   const issueNumber = params.id;
