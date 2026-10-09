@@ -17,6 +17,16 @@ from app.routers import repo, issues, plan, pr, tests
 
 # ─── App Setup ───────────────────────────────────────────────────────
 
+tags_metadata = [
+    {"name": "Health", "description": "API health status and diagnostic checks."},
+    {"name": "Repository", "description": "Analyze GitHub repository structure, tech stack, and beginner issues."},
+    {"name": "Issues", "description": "Explain and simplify GitHub issues using Gemma 4 AI."},
+    {"name": "Plan", "description": "Generate step-by-step contribution implementation roadmap."},
+    {"name": "Tests", "description": "Recommend test framework, test cases, and code scaffolding."},
+    {"name": "Pull Request", "description": "Generate professional PR title and description."},
+    {"name": "Root", "description": "Service links and documentation index."},
+]
+
 app = FastAPI(
     title="Hacktoberfest Copilot API",
     description=(
@@ -26,6 +36,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    openapi_tags=tags_metadata,
 )
 
 # ─── CORS Middleware ─────────────────────────────────────────────────
