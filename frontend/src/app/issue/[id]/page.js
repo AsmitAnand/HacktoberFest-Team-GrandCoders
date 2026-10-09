@@ -4,6 +4,8 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Toast from '../../../components/Toast';
+import PrChecklistModal from '../../../components/PrChecklistModal';
+import ExportRoadmapButton from '../../../components/ExportRoadmapButton';
 
 function IssueContent({ params }) {
   const issueNumber = params.id;
@@ -26,6 +28,9 @@ function IssueContent({ params }) {
   const [copiedPr, setCopiedPr] = useState(false);
   const [copiedTest, setCopiedTest] = useState(false);
   const [toast, setToast] = useState(null);
+
+  // PR Checklist Modal State (Issue #31)
+  const [isPrModalOpen, setIsPrModalOpen] = useState(false);
 
   // Initial fetch for explanation
   useEffect(() => {
@@ -148,6 +153,13 @@ function IssueContent({ params }) {
     }
   };
 
+  const openPrModal = async () => {
+    if (!prData) {
+      await loadPr();
+    }
+    setIsPrModalOpen(true);
+  };
+
   if (loadingExplain) {
     return (
       <div className="container issue-detail">
@@ -173,10 +185,23 @@ function IssueContent({ params }) {
   }
 
   return (
-    <div className="container issue-detail animate-fade-in">
-      <Link href={`/analyze?url=${encodeURIComponent(repoUrl)}`} className="dashboard__back">
-        ← Back to Repository
-      </Link>
+    <div className="container issue-detail animate-fade-in printable-area">
+      <div className="issue-detail__top-nav">
+        <Link href={`/analyze?url=${encodeURIComponent(repoUrl)}`} className="dashboard__back">
+          ← Back to Repository
+        </Link>
+        
+        {/* Export Roadmap Dropdown (Issue #32) */}
+        <ExportRoadmapButton
+          repoUrl={repoUrl}
+          issueNumber={issueNumber}
+          explainData={explainData}
+          planData={planData}
+          testsData={testsData}
+          prData={prData}
+          onShowToast={(t) => setToast(t)}
+        />
+      </div>
 
       <div className="issue-detail__header">
         <h1 className="issue-detail__title">{explainData.issue.title}</h1>
@@ -191,7 +216,7 @@ function IssueContent({ params }) {
             rel="noopener noreferrer"
             style={{ color: 'var(--color-accent-blue)', textDecoration: 'underline' }}
           >
-            View on GitHub
+            View on GitHub ↗
           </a>
         </div>
       </div>
@@ -232,12 +257,12 @@ function IssueContent({ params }) {
 
             <h3>Required Skills</h3>
             <div className="skills-list">
-              {explainData.required_skills.map((skill, i) => (
+              {explainData.required_skills?.map((skill, i) => (
                 <span key={i} className="tag tag--tech">{skill}</span>
               ))}
             </div>
 
-            {Object.keys(explainData.jargon_explained || {}).length > 0 && (
+            {explainData.jargon_explained && Object.keys(explainData.jargon_explained).length > 0 && (
               <>
                 <h3>Jargon Dictionary</h3>
                 <ul>
@@ -271,7 +296,7 @@ function IssueContent({ params }) {
             {loadingPlan ? (
               <div className="loading">
                 <div className="loading__spinner" />
-                <div className="loading__text">Drafting step-by-step plan...</div>
+                <div className="loading__text">Drafting step-by-step plan with Gemma 4...</div>
               </div>
             ) : planData ? (
               <>
@@ -311,7 +336,7 @@ function IssueContent({ params }) {
               </div>
             ) : testsData ? (
               <>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <h3>Recommended Test Framework</h3>
                   {testsData.test_framework && (
                     <span className="tag tag--tech">{testsData.test_framework}</span>
@@ -331,7 +356,7 @@ function IssueContent({ params }) {
 
                 {testsData.example_code && (
                   <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <h3>Example Test Code</h3>
                       <button 
                         className={`copy-btn ${copiedTest ? 'copy-btn--copied' : ''}`}
@@ -358,21 +383,31 @@ function IssueContent({ params }) {
             {loadingPr ? (
               <div className="loading">
                 <div className="loading__spinner" />
-                <div className="loading__text">Writing PR description...</div>
+                <div className="loading__text">Writing PR description with Gemma 4...</div>
               </div>
             ) : prData ? (
               <>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3>Generated Pull Request</h3>
-                  <button 
-                    className={`copy-btn ${copiedPr ? 'copy-btn--copied' : ''}`}
-                    onClick={copyToClipboard}
-                  >
-                    {copiedPr ? '✓ Copied!' : '📋 Copy Markdown'}
-                  </button>
+                <div className="pr-tab-header">
+                  <div className="pr-tab-actions">
+                    <button 
+                      className={`copy-btn ${copiedPr ? 'copy-btn--copied' : ''}`}
+                      onClick={copyToClipboard}
+                    >
+                      {copiedPr ? '✓ Copied!' : '📋 Copy Markdown'}
+                    </button>
+                    <button 
+                      className="checklist-open-btn"
+                      onClick={openPrModal}
+                      id="launch-pr-checklist-btn"
+                    >
+                      🚀 Launch PR Checklist & Preview
+                    </button>
+                  </div>
                 </div>
                 
-                <p><strong>Title:</strong> <code>{prData.title}</code></p>
+                <div className="pr-title-box">
+                  <strong>PR Title:</strong> <code>{prData.title}</code>
+                </div>
                 
                 <pre style={{ marginTop: '1rem', whiteSpace: 'pre-wrap' }}>
                   <code>{prData.body}</code>
@@ -384,6 +419,15 @@ function IssueContent({ params }) {
           </div>
         )}
       </div>
+
+      {/* Interactive PR Checklist Modal (Issue #31) */}
+      <PrChecklistModal
+        isOpen={isPrModalOpen}
+        onClose={() => setIsPrModalOpen(false)}
+        prData={prData}
+        issueNumber={issueNumber}
+        repoUrl={repoUrl}
+      />
 
       {toast && (
         <Toast
