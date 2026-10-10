@@ -24,13 +24,13 @@ async def generate_plan(request: PlanGenerateRequest):
     testing approach, and PR checklist.
     """
     try:
-        # Fetch issue and repo context
-        issue_data = await github_client.get_issue(
-            request.repo_url, request.issue_number
+        import asyncio
+        issue_data, readme, file_tree, contributing = await asyncio.gather(
+            github_client.get_issue(request.repo_url, request.issue_number),
+            github_client.get_readme(request.repo_url),
+            github_client.get_file_tree(request.repo_url),
+            github_client.get_contributing(request.repo_url),
         )
-        readme = await github_client.get_readme(request.repo_url)
-        file_tree = await github_client.get_file_tree(request.repo_url)
-        contributing = await github_client.get_contributing(request.repo_url)
 
         # Generate plan with AI
         plan = await ai_service.generate_plan(

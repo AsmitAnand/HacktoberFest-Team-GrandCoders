@@ -24,14 +24,12 @@ async def explain_issue(request: IssueExplainRequest):
     identify required skills, and suggest relevant files.
     """
     try:
-        # Fetch issue details
-        issue_data = await github_client.get_issue(
-            request.repo_url, request.issue_number
+        import asyncio
+        issue_data, readme, file_tree = await asyncio.gather(
+            github_client.get_issue(request.repo_url, request.issue_number),
+            github_client.get_readme(request.repo_url),
+            github_client.get_file_tree(request.repo_url),
         )
-
-        # Fetch repo context for better AI understanding
-        readme = await github_client.get_readme(request.repo_url)
-        file_tree = await github_client.get_file_tree(request.repo_url)
 
         # Use AI to explain the issue
         explanation = await ai_service.explain_issue(

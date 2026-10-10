@@ -24,11 +24,11 @@ async def generate_pr(request: PRGenerateRequest):
     description, issue reference, and checklist.
     """
     try:
-        # Fetch issue details and contributing guidelines
-        issue_data = await github_client.get_issue(
-            request.repo_url, request.issue_number
+        import asyncio
+        issue_data, contributing = await asyncio.gather(
+            github_client.get_issue(request.repo_url, request.issue_number),
+            github_client.get_contributing(request.repo_url),
         )
-        contributing = await github_client.get_contributing(request.repo_url)
 
         # Generate PR description with AI
         pr = await ai_service.generate_pr_description(

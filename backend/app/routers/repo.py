@@ -30,13 +30,22 @@ async def analyze_repo(request: RepoAnalyzeRequest):
     tech stack detection, and beginner-friendly issues.
     """
     try:
-        # Fetch all repo data in parallel-ish fashion
-        repo_data = await github_client.get_repo(request.repo_url)
-        file_tree_data = await github_client.get_file_tree(request.repo_url)
-        readme_raw = await github_client.get_readme(request.repo_url)
-        contributing_raw = await github_client.get_contributing(request.repo_url)
-        beginner_issues = await github_client.get_beginner_issues(request.repo_url)
-        all_issues = await github_client.get_issues(request.repo_url)
+        import asyncio
+        (
+            repo_data,
+            file_tree_data,
+            readme_raw,
+            contributing_raw,
+            beginner_issues,
+            all_issues,
+        ) = await asyncio.gather(
+            github_client.get_repo(request.repo_url),
+            github_client.get_file_tree(request.repo_url),
+            github_client.get_readme(request.repo_url),
+            github_client.get_contributing(request.repo_url),
+            github_client.get_beginner_issues(request.repo_url),
+            github_client.get_issues(request.repo_url),
+        )
 
         # Use AI to summarize and detect tech stack
         readme_summary = ""

@@ -225,8 +225,11 @@ class GitHubClient:
         all_issues = []
         seen_numbers = set()
 
-        for label in beginner_labels:
-            issues = await self.get_issues(repo_url, labels=label)
+        import asyncio
+        tasks = [self.get_issues(repo_url, labels=label) for label in beginner_labels]
+        results = await asyncio.gather(*tasks)
+
+        for issues in results:
             for issue in issues:
                 if issue["number"] not in seen_numbers:
                     seen_numbers.add(issue["number"])

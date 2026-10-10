@@ -24,11 +24,11 @@ async def suggest_tests(request: TestSuggestRequest):
     and example test code.
     """
     try:
-        # Fetch issue and repo context
-        issue_data = await github_client.get_issue(
-            request.repo_url, request.issue_number
+        import asyncio
+        issue_data, file_tree = await asyncio.gather(
+            github_client.get_issue(request.repo_url, request.issue_number),
+            github_client.get_file_tree(request.repo_url),
         )
-        file_tree = await github_client.get_file_tree(request.repo_url)
 
         # Generate test suggestions with AI
         tests = await ai_service.suggest_tests(
