@@ -32,7 +32,10 @@ function IssueContent({ params }) {
   // PR Checklist Modal State (Issue #31)
   const [isPrModalOpen, setIsPrModalOpen] = useState(false);
 
-  const apiBase = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '') || 'https://hacktoberfest-copilot-backend-production-fe4a.up.railway.app';
+  let apiBase = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+  if (!apiBase || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && apiBase.includes('localhost'))) {
+    apiBase = 'https://hacktoberfest-copilot-backend-production-fe4a.up.railway.app';
+  }
 
   // Initial fetch for explanation
   useEffect(() => {
