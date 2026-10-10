@@ -23,7 +23,7 @@ function AnalyzeContent() {
       return;
     }
 
-    const cacheKey = `hf_analysis_${encodeURIComponent(repoUrl)}`;
+    const cacheKey = `hf_analysis_v2_${encodeURIComponent(repoUrl)}`;
 
     // Try reading from sessionStorage for instant page back/forward navigation
     try {
@@ -88,12 +88,12 @@ function AnalyzeContent() {
     return uniqueIssues.map((issue) => {
       const labelNames = (issue.labels || []).map((l) => (typeof l === 'string' ? l.toLowerCase() : ''));
       let difficulty = 'INTERMEDIATE';
-      if (labelNames.some((l) => l.includes('hard') || l.includes('advanced') || l.includes('expert'))) {
-        difficulty = 'ADVANCED';
-      } else if (labelNames.some((l) => l.includes('good first') || l.includes('beginner') || l.includes('easy') || l.includes('starter'))) {
+      if (labelNames.some((l) => l.includes('good first') || l.includes('beginner') || l.includes('easy') || l.includes('starter') || l.includes('level1'))) {
         difficulty = 'BEGINNER';
-      } else if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted'))) {
+      } else if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted') || l.includes('level2'))) {
         difficulty = 'INTERMEDIATE';
+      } else if (labelNames.some((l) => l.includes('hard') || l.includes('advanced') || l.includes('expert') || l.includes('level3'))) {
+        difficulty = 'ADVANCED';
       }
       return {
         ...issue,
