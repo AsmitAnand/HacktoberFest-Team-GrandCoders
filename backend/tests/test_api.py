@@ -129,9 +129,10 @@ def test_ai_service_threadpool_execution(monkeypatch):
     from unittest.mock import MagicMock
     from app.services.ai_service import ai_service
 
+    monkeypatch.setenv("GOOGLE_API_KEY", "fake_test_key")
     mock_model = MagicMock()
     mock_model.generate_content.return_value = MagicMock(text="Mocked AI response")
-    monkeypatch.setattr(ai_service, "_get_model", lambda: mock_model)
+    monkeypatch.setattr(ai_service, "_get_model", lambda *args, **kwargs: mock_model)
 
     res = asyncio.run(ai_service._generate("test prompt"))
     assert res == "Mocked AI response"

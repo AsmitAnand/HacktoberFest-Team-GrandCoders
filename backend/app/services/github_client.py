@@ -94,7 +94,7 @@ class GitHubClient:
                 return cached_data
 
         url = f"{self.base_url}{endpoint}"
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
             response = await client.get(url, headers=self.headers, params=params)
             response.raise_for_status()
             data = response.json()

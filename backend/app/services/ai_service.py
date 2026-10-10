@@ -23,26 +23,41 @@ class AIService:
         self.model_name = settings.gemma_model
         self._model = None
 
-    def _get_model(self):
-        """Lazy-initialize the Gemma 4 model."""
-        if self._model is None:
-            if not self.api_key:
-                raise ValueError(
-                    "GOOGLE_API_KEY environment variable is not set. "
-                    "Get your key at https://aistudio.google.com"
-                )
-            genai.configure(api_key=self.api_key)
-            self._model = genai.GenerativeModel(self.model_name)
-        return self._model
+    def _get_model(self, model_name: str | None = None):
+        """Initialize the GenerativeModel instance."""
+        target_model = model_name or self.model_name
+        api_key = os.getenv("GOOGLE_API_KEY") or self.api_key
+        if not api_key:
+            raise ValueError(
+                "GOOGLE_API_KEY environment variable is not set. "
+                "Get your key at https://aistudio.google.com"
+            )
+        genai.configure(api_key=api_key)
+        return genai.GenerativeModel(target_model)
 
     async def _generate(self, prompt: str) -> str:
-        """Generate a response from Gemma 4 asynchronously in a worker thread."""
-        try:
-            model = self._get_model()
-            response = await asyncio.to_thread(model.generate_content, prompt)
-            return response.text
-        except Exception as e:
-            return f"AI service temporarily unavailable: {str(e)}"
+        """Generate a response from AI asynchronously in a worker thread, trying primary model and standard fallbacks."""
+        api_key = os.getenv("GOOGLE_API_KEY") or self.api_key
+        if not api_key:
+            return "AI service unavailable: GOOGLE_API_KEY environment variable is not set. Please configure it in your Railway/Vercel dashboard."
+
+        candidate_models = [self.model_name]
+        for fallback in ["gemini-1.5-flash", "gemini-2.5-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro"]:
+            if fallback not in candidate_models:
+                candidate_models.append(fallback)
+
+        last_error = None
+        for model_name in candidate_models:
+            try:
+                model = self._get_model(model_name)
+                response = await asyncio.to_thread(model.generate_content, prompt)
+                if response and hasattr(response, "text") and response.text:
+                    return response.text
+            except Exception as e:
+                last_error = e
+                continue
+
+        return f"AI service temporarily unavailable: {str(last_error)}"
 
     def _build_context(
         self,
@@ -181,6 +196,9 @@ JARGON_EXPLAINED:
         if current_section:
             result = self._save_section(result, current_section, current_content)
 
+        if not result["simplified_explanation"] and response:
+            result["simplified_explanation"] = response.strip()
+
         return result
 
     def _save_section(self, result: dict, section: str, content: list[str]) -> dict:
@@ -317,6 +335,9 @@ PR_CHECKLIST:
 
         if current_section:
             result = self._save_plan_section(result, current_section, current_content)
+
+        if not result["approach"] and response:
+            result["approach"] = response.strip()
 
         return result
 
