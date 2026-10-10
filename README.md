@@ -83,9 +83,9 @@ Paste any GitHub repository URL and the assistant will:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ 1. LANDING PAGE                                                       │
-│    Enter public GitHub repository URL (e.g. facebook/react)           │
-│    [ https://github.com/facebook/react                     ] [ Analyze ]│
+│ 1. LANDING PAGE                                                        │
+│    Enter public GitHub repository URL (e.g. facebook/react)            │
+│    [ https://github.com/facebook/react                     ] [ Analyze]│
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │
                                     ▼
@@ -93,7 +93,7 @@ Paste any GitHub repository URL and the assistant will:
 │ 2. REPO DASHBOARD                                                      │
 │    Tech Stack: JavaScript, C++, Flow | Good First Issues: 12 Detected  │
 │    ┌────────────────────────────────────────────────────────────────┐  │
-│    │ Issue #2841: Fix typo in documentation                          │  │
+│    │ Issue #2841: Fix typo in documentation                         │  │
 │    │ Difficulty: Beginner | Skills: Markdown, Git                   │  │
 │    └──────────────────────────────┬─────────────────────────────────┘  │
 └───────────────────────────────────┼────────────────────────────────────┘
@@ -101,7 +101,7 @@ Paste any GitHub repository URL and the assistant will:
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ 3. AI GUIDANCE HUB (Gemma 4 Powered)                                  │
-│    [Understand]   [ Implementation Plan]   [ Tests]   [ PR]  │
+│    [Understand]   [ Implementation Plan]   [ Tests]   [ PR]           │
 │    ├─ Plain-English Breakdown & Jargon Explanations                   │
 │    ├─ Targeted File Tree & Component Pointers                         │
 │    ├─ Step-by-Step Action Roadmap & PR Checklist                      │
@@ -116,25 +116,25 @@ Paste any GitHub repository URL and the assistant will:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Next.js Frontend                      │
+│                    Next.js Frontend                     │
 │  ┌──────────┐  ┌───────────────┐  ┌──────────────────┐  │
-│  │ Landing  │  │ Repo Analysis │  │  Issue Detail +   │  │
-│  │  Page    │→ │  Dashboard    │→ │  AI Guidance      │  │
+│  │ Landing  │  │ Repo Analysis │  │  Issue Detail +  │  │
+│  │  Page    │→ │  Dashboard    │→ │  AI Guidance     |  │
 │  └──────────┘  └───────────────┘  └──────────────────┘  │
 └──────────────────────┬──────────────────────────────────┘
                        │ HTTP/REST
 ┌──────────────────────▼──────────────────────────────────┐
-│                  Python FastAPI Backend                   │
+│                  Python FastAPI Backend                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
-│  │ GitHub API   │  │  Gemma 4 AI  │  │  Response     │   │
-│  │ Client       │  │  Service     │  │  Cache        │   │
+│  │ GitHub API   │  │  Gemma 4 AI  │  │  Response    │   │
+│  │ Client       │  │  Service     │  │  Cache       │   │
 │  └──────┬───────┘  └──────┬───────┘  └──────────────┘   │
 └─────────┼─────────────────┼─────────────────────────────┘
           │                 │
     ┌─────▼─────┐    ┌──────▼───────┐
     │ GitHub    │    │ Google AI    │
     │ REST API  │    │ Studio       │
-    └───────────┘    │ (Gemma 4)   │
+    └───────────┘    │ (Gemma 4)    │
                      └──────────────┘
 ```
 
