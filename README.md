@@ -99,7 +99,7 @@ Paste any GitHub repository URL and the assistant will:
 └───────────────────────────────────┼────────────────────────────────────┘
                                     │ Click Issue
                                     ▼
-┌────────────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────────┐
 │ 3. AI GUIDANCE HUB (Gemma 4 Powered)                                  │
 │    [Understand]   [ Implementation Plan]   [ Tests]   [ PR]           │
 │    ├─ Plain-English Breakdown & Jargon Explanations                   │
@@ -107,7 +107,7 @@ Paste any GitHub repository URL and the assistant will:
 │    ├─ Step-by-Step Action Roadmap & PR Checklist                      │
 │    ├─ Recommended Test Framework & Unit Test Scaffolding              │
 │    └─ 1-Click Copy Markdown PR Description Ready for GitHub           │
-└────────────────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────────────┘
 ```
 
 >  **API Documentation:** Check out our [API Documentation Guide](docs/API.md) and import the [Postman Collection](docs/Hacktoberfest_Copilot.postman_collection.json) to test the backend endpoints directly.
