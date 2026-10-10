@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -11,8 +11,14 @@ RUN npm install
 # Copy project files
 COPY . .
 
+# Build Next.js application
+RUN npm run build
+
 # Expose port
 EXPOSE 3000
 
-# Start development server
-CMD ["npm", "run", "dev"]
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Start production server
+CMD ["npm", "start"]
