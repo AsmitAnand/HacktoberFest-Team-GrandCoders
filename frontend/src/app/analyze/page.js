@@ -180,7 +180,9 @@ function AnalyzeContent() {
         </div>
 
         <p className="repo-card__desc">
-          {data.readme_summary || data.repo.description || 'No description available.'}
+          {(!data.readme_summary || data.readme_summary.startsWith('AI service'))
+            ? (data.repo.description || data.readme_summary || 'No description available.')
+            : data.readme_summary}
         </p>
 
         <div className="repo-card__tags">

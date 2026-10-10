@@ -82,10 +82,12 @@ async def _summarize_readme(readme: str) -> str:
         f"{truncated}"
     )
     try:
-        return await ai_service._generate(prompt)
+        summary = await ai_service._generate(prompt)
+        if not summary or summary.startswith("AI service temporarily unavailable") or summary.startswith("AI service unavailable"):
+            return ""
+        return summary
     except Exception:
-        # Fallback: return first 500 chars of README
-        return readme[:500] + "..."
+        return ""
 
 
 async def _summarize_contributing(contributing: str) -> str:
@@ -97,9 +99,12 @@ async def _summarize_contributing(contributing: str) -> str:
         f"{truncated}"
     )
     try:
-        return await ai_service._generate(prompt)
+        summary = await ai_service._generate(prompt)
+        if not summary or summary.startswith("AI service temporarily unavailable") or summary.startswith("AI service unavailable"):
+            return ""
+        return summary
     except Exception:
-        return contributing[:300] + "..."
+        return ""
 
 
 def _detect_tech_stack(readme: str, file_tree: list[dict]) -> list[str]:

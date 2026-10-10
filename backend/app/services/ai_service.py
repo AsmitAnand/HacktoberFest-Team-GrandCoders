@@ -22,6 +22,56 @@ class AIService:
         self.api_key = settings.google_api_key
         self.model_name = settings.gemma_model
         self._model = None
+        self._available_models = None
+
+    def _get_available_models(self, api_key: str) -> list[str]:
+        """Discover models that support generateContent on this API key."""
+        if self._available_models:
+            return self._available_models
+
+        discovered = []
+        try:
+            genai.configure(api_key=api_key)
+            models = genai.list_models()
+            for m in models:
+                methods = getattr(m, "supported_generation_methods", []) or []
+                if "generateContent" in methods:
+                    name = m.name
+                    discovered.append(name)
+                    clean = name.replace("models/", "")
+                    if clean not in discovered:
+                        discovered.append(clean)
+        except Exception:
+            pass
+
+        def sort_priority(name: str) -> int:
+            n = name.lower()
+            if "1.5-flash" in n:
+                return 1
+            if "2.0-flash" in n:
+                return 2
+            if "gemini-pro" in n or "gemini-1.0-pro" in n:
+                return 3
+            if "gemini" in n:
+                return 4
+            return 10
+
+        discovered.sort(key=sort_priority)
+        if discovered:
+            self._available_models = discovered
+            return discovered
+
+        return [
+            "gemini-1.5-flash",
+            "models/gemini-1.5-flash",
+            "gemini-1.5-flash-latest",
+            "gemini-pro",
+            "models/gemini-pro",
+            "gemini-1.0-pro",
+            "models/gemini-1.0-pro",
+            "gemini-1.5-pro",
+            "models/gemini-1.5-pro",
+        ]
 
     def _get_model(self, model_name: str | None = None):
         """Initialize the GenerativeModel instance."""
@@ -41,13 +91,17 @@ class AIService:
         if not api_key:
             return "AI service unavailable: GOOGLE_API_KEY environment variable is not set. Please configure it in your Railway/Vercel dashboard."
 
-        candidate_models = [self.model_name]
-        for fallback in ["gemini-1.5-flash", "gemini-2.5-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro"]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
+        models_to_try = []
+        if self.model_name and self.model_name not in ["gemma-4", ""]:
+            models_to_try.append(self.model_name)
+
+        available = await asyncio.to_thread(self._get_available_models, api_key)
+        for m in available:
+            if m not in models_to_try:
+                models_to_try.append(m)
 
         last_error = None
-        for model_name in candidate_models:
+        for model_name in models_to_try:
             try:
                 model = self._get_model(model_name)
                 response = await asyncio.to_thread(model.generate_content, prompt)
