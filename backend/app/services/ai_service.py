@@ -10,6 +10,7 @@ Handles all AI-powered features:
 """
 
 import os
+import asyncio
 import google.generativeai as genai
 from app.config import settings
 
@@ -35,7 +36,7 @@ class AIService:
         return genai.GenerativeModel(target_model)
 
     async def _generate(self, prompt: str) -> str:
-        """Generate a response from AI, trying primary model and standard fallbacks."""
+        """Generate a response from AI asynchronously in a worker thread, trying primary model and standard fallbacks."""
         api_key = os.getenv("GOOGLE_API_KEY") or self.api_key
         if not api_key:
             return "AI service unavailable: GOOGLE_API_KEY environment variable is not set. Please configure it in your Railway/Vercel dashboard."
@@ -49,7 +50,7 @@ class AIService:
         for model_name in candidate_models:
             try:
                 model = self._get_model(model_name)
-                response = model.generate_content(prompt)
+                response = await asyncio.to_thread(model.generate_content, prompt)
                 if response and hasattr(response, "text") and response.text:
                     return response.text
             except Exception as e:
