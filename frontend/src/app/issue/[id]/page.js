@@ -32,6 +32,8 @@ function IssueContent({ params }) {
   // PR Checklist Modal State (Issue #31)
   const [isPrModalOpen, setIsPrModalOpen] = useState(false);
 
+  const apiBase = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '') || 'https://hacktoberfest-copilot-backend-production-fe4a.up.railway.app';
+
   // Initial fetch for explanation
   useEffect(() => {
     if (!repoUrl || !issueNumber) {
@@ -41,7 +43,7 @@ function IssueContent({ params }) {
 
     const fetchExplanation = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/explain-issue`, {
+        const response = await fetch(`${apiBase}/api/explain-issue`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ repo_url: repoUrl, issue_number: parseInt(issueNumber) }),
@@ -59,14 +61,14 @@ function IssueContent({ params }) {
     };
 
     fetchExplanation();
-  }, [repoUrl, issueNumber, router]);
+  }, [repoUrl, issueNumber, router, apiBase]);
 
   // Fetch plan when tab is clicked
   const loadPlan = async () => {
     if (planData || loadingPlan) return;
     setLoadingPlan(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/generate-plan`, {
+      const response = await fetch(`${apiBase}/api/generate-plan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ repo_url: repoUrl, issue_number: parseInt(issueNumber) }),
@@ -87,7 +89,7 @@ function IssueContent({ params }) {
     if (testsData || loadingTests) return;
     setLoadingTests(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/suggest-tests`, {
+      const response = await fetch(`${apiBase}/api/suggest-tests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +114,7 @@ function IssueContent({ params }) {
     if (prData || loadingPr) return;
     setLoadingPr(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/generate-pr`, {
+      const response = await fetch(`${apiBase}/api/generate-pr`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ repo_url: repoUrl, issue_number: parseInt(issueNumber) }),

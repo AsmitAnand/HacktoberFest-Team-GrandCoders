@@ -20,9 +20,11 @@ class Settings:
     gemma_model: str = os.getenv("GEMMA_MODEL", "gemma-4")
 
     # CORS
-    cors_origins: list[str] = os.getenv(
-        "CORS_ORIGINS", "http://localhost:3000"
-    ).split(",")
+    cors_origins: list[str] = [
+        origin.strip()
+        for origin in os.getenv("CORS_ORIGINS", "*").split(",")
+        if origin.strip()
+    ]
 
     # App
     app_env: str = os.getenv("APP_ENV", "development")

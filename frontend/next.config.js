@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/:path*`,
+        destination: `${(process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '') || 'https://hacktoberfest-copilot-backend-production-fe4a.up.railway.app'}/api/:path*`,
       },
     ];
   },

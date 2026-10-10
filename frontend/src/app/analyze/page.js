@@ -39,7 +39,8 @@ function AnalyzeContent() {
 
     const fetchRepoData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/analyze-repo`, {
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '') || 'https://hacktoberfest-copilot-backend-production-fe4a.up.railway.app';
+        const response = await fetch(`${apiBase}/api/analyze-repo`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ repo_url: repoUrl }),
