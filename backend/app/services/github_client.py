@@ -6,12 +6,42 @@ Fetches repository metadata, file trees, issues, README, and more.
 """
 
 import re
+import time
 import base64
 import httpx
-from functools import lru_cache
-from typing import Any
+from typing import Any, Optional
 
 from app.config import settings
+
+
+class SimpleTTLCache:
+    """In-memory cache with Time-To-Live (TTL) expiration."""
+
+    def __init__(self, ttl_seconds: int = 3600):
+        self.ttl = ttl_seconds
+        self._cache: dict[str, tuple[float, Any]] = {}
+
+    def get(self, key: str) -> Optional[Any]:
+        if key in self._cache:
+            expires_at, value = self._cache[key]
+            if time.time() < expires_at:
+                return value
+            del self._cache[key]
+        return None
+
+    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+        duration = ttl if ttl is not None else self.ttl
+        self._cache[key] = (time.time() + duration, value)
+
+    def clear(self) -> None:
+        self._cache.clear()
+
+    def size(self) -> int:
+        now = time.time()
+        expired = [k for k, (exp, _) in self._cache.items() if exp <= now]
+        for k in expired:
+            del self._cache[k]
+        return len(self._cache)
 
 
 class GitHubClient:
@@ -25,6 +55,7 @@ class GitHubClient:
         }
         if settings.github_token:
             self.headers["Authorization"] = f"Bearer {settings.github_token}"
+        self.cache = SimpleTTLCache(ttl_seconds=settings.cache_ttl_seconds)
 
     def _parse_repo_url(self, repo_url: str) -> tuple[str, str]:
         """
@@ -54,15 +85,29 @@ class GitHubClient:
             "Expected format: https://github.com/owner/repo"
         )
 
-    async def _get(self, endpoint: str, params: dict | None = None) -> Any:
-        """Make a GET request to the GitHub API."""
+    async def _get(self, endpoint: str, params: dict | None = None, use_cache: bool = True) -> Any:
+        """Make a GET request to the GitHub API with caching support."""
+        cache_key = f"{endpoint}:{str(sorted(params.items())) if params else ''}"
+        if use_cache:
+            cached_data = self.cache.get(cache_key)
+            if cached_data is not None:
+                return cached_data
+
         url = f"{self.base_url}{endpoint}"
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                url, headers=self.headers, params=params, timeout=30.0
-            )
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(url, headers=self.headers, params=params)
             response.raise_for_status()
-            return response.json()
+            data = response.json()
+            if use_cache:
+                self.cache.set(cache_key, data)
+            return data
+
+    def get_cache_stats(self) -> dict:
+        """Return cache health and utilization statistics."""
+        return {
+            "active_entries": self.cache.size(),
+            "ttl_seconds": self.cache.ttl,
+        }
 
     async def get_repo(self, repo_url: str) -> dict:
         """Fetch repository metadata."""

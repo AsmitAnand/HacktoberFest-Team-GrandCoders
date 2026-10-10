@@ -23,6 +23,20 @@ function AnalyzeContent() {
       return;
     }
 
+    const cacheKey = `hf_analysis_${encodeURIComponent(repoUrl)}`;
+
+    // Try reading from sessionStorage for instant page back/forward navigation
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        setData(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // Ignore storage error
+    }
+
     const fetchRepoData = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/analyze-repo`, {
@@ -37,6 +51,16 @@ function AnalyzeContent() {
 
         const result = await response.json();
         setData(result);
+
+        // Store in sessionStorage and save to recent searches
+        try {
+          sessionStorage.setItem(cacheKey, JSON.stringify(result));
+          const stored = JSON.parse(localStorage.getItem('hf_recent_repos') || '[]');
+          const filtered = Array.isArray(stored) ? stored.filter((item) => item !== repoUrl) : [];
+          localStorage.setItem('hf_recent_repos', JSON.stringify([repoUrl, ...filtered].slice(0, 5)));
+        } catch {
+          // Ignore storage quota errors
+        }
       } catch (err) {
         setError(err.message);
       } finally {

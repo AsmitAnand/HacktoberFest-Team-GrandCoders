@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
@@ -8,13 +8,76 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const POPULAR_REPOS = [
+    { name: 'facebook/react', url: 'https://github.com/facebook/react', icon: '⚛️' },
+    { name: 'fastapi/fastapi', url: 'https://github.com/fastapi/fastapi', icon: '⚡' },
+    { name: 'pallets/flask', url: 'https://github.com/pallets/flask', icon: '🌶️' },
+    { name: 'vercel/next.js', url: 'https://github.com/vercel/next.js', icon: '▲' },
+  ];
+
+  const [recentRepos, setRecentRepos] = useState([]);
+
+  // Load recent repos from localStorage and register '/' shortcut
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('hf_recent_repos') || '[]');
+      if (Array.isArray(stored)) {
+        setRecentRepos(stored);
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        const input = document.getElementById('repo-url-input');
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const saveRecentRepo = (url) => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('hf_recent_repos') || '[]');
+      const filtered = Array.isArray(stored) ? stored.filter((item) => item !== url) : [];
+      const updated = [url, ...filtered].slice(0, 5);
+      localStorage.setItem('hf_recent_repos', JSON.stringify(updated));
+      setRecentRepos(updated);
+    } catch {
+      // Ignore localStorage errors
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!repoUrl) return;
 
+    saveRecentRepo(repoUrl);
     setIsLoading(true);
-    // Encode the URL so it can be passed safely as a query parameter
     router.push(`/analyze?url=${encodeURIComponent(repoUrl)}`);
+  };
+
+  const handleQuickSelect = (url) => {
+    setRepoUrl(url);
+    saveRecentRepo(url);
+    setIsLoading(true);
+    router.push(`/analyze?url=${encodeURIComponent(url)}`);
+  };
+
+  const handleClearRecent = () => {
+    try {
+      localStorage.removeItem('hf_recent_repos');
+      setRecentRepos([]);
+    } catch {
+      // Ignore
+    }
   };
 
   return (
@@ -46,7 +109,7 @@ export default function Home() {
             <input
               type="url"
               className="repo-input__field"
-              placeholder="Paste a GitHub repository URL (e.g., https://github.com/owner/repo)"
+              placeholder="Paste a GitHub repository URL (e.g., https://github.com/owner/repo) — press '/' to focus"
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
               required
@@ -62,6 +125,58 @@ export default function Home() {
             </button>
           </div>
         </form>
+
+        {/* Quick Start Popular Repos */}
+        <div className="quick-repos">
+          <span className="quick-repos__label">Quick Start:</span>
+          <div className="quick-repos__chips">
+            {POPULAR_REPOS.map((item) => (
+              <button
+                key={item.url}
+                type="button"
+                className="quick-repo-chip"
+                onClick={() => handleQuickSelect(item.url)}
+              >
+                <span>{item.icon}</span>
+                <span>{item.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent Search History */}
+        {recentRepos.length > 0 && (
+          <div className="recent-repos">
+            <div className="recent-repos__header">
+              <span className="recent-repos__label">Recent Repositories</span>
+              <button
+                type="button"
+                className="recent-repos__clear"
+                onClick={handleClearRecent}
+                aria-label="Clear recent repositories"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="recent-repos__chips">
+              {recentRepos.map((url) => {
+                const shortLabel = url.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
+                return (
+                  <button
+                    key={url}
+                    type="button"
+                    className="recent-repo-chip"
+                    onClick={() => handleQuickSelect(url)}
+                    title={url}
+                  >
+                    <span>🕒</span>
+                    <span>{shortLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Features Grid */}
