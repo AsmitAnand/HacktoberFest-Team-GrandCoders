@@ -9,13 +9,16 @@ client = TestClient(app)
 
 
 def test_health_check_endpoint():
-    """Verify that the health check endpoint returns 200 and healthy status."""
+    """Verify that the health check endpoint returns 200, healthy status, uptime, and cache stats."""
     response = client.get("/api/health")
     assert response.status_code == 200
     data = response.json()
     assert data.get("status") == "healthy"
     assert data.get("service") == "hacktoberfest-copilot-api"
     assert "version" in data
+    assert "uptime_seconds" in data
+    assert "cache" in data
+    assert "active_entries" in data["cache"]
 
 
 def test_root_endpoint():
@@ -98,4 +101,24 @@ def test_generate_plan_invalid_url():
         json={"repo_url": "invalid-url", "issue_number": 1},
     )
     assert response.status_code in [400, 404, 500, 502]
+
+
+def test_ttl_cache_lifecycle():
+    """Verify SimpleTTLCache set, get, expiration, and clear operations."""
+    import time
+    from app.services.github_client import SimpleTTLCache
+
+    cache = SimpleTTLCache(ttl_seconds=1)
+    cache.set("key1", "value1")
+    assert cache.get("key1") == "value1"
+    assert cache.size() == 1
+
+    # Test custom ttl expiration
+    cache.set("short", "expire_fast", ttl=0)
+    time.sleep(0.01)
+    assert cache.get("short") is None
+
+    cache.clear()
+    assert cache.size() == 0
+    assert cache.get("key1") is None
 

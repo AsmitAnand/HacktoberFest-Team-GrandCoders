@@ -7,12 +7,16 @@ This module creates and configures the FastAPI application with:
 - Health check endpoint
 """
 
+import time
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
 from app.config import settings
 from app.exceptions import AppException
+
+START_TIME = time.time()
 from app.routers import repo, issues, plan, pr, tests
 
 # ─── App Setup ───────────────────────────────────────────────────────
@@ -48,6 +52,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # ─── Exception Handlers ──────────────────────────────────────────────
 
@@ -77,11 +82,15 @@ app.include_router(tests.router, prefix="/api", tags=["Tests"])
 
 @app.get("/api/health", tags=["Health"])
 async def health_check():
-    """Health check endpoint to verify the API is running."""
+    """Health check endpoint to verify API uptime, cache utilization, and system status."""
+    from app.services.github_client import github_client
+
     return {
         "status": "healthy",
         "service": "hacktoberfest-copilot-api",
         "version": "1.0.0",
+        "uptime_seconds": round(time.time() - START_TIME, 2),
+        "cache": github_client.get_cache_stats(),
     }
 
 
