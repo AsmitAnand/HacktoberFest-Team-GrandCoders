@@ -2,7 +2,7 @@
   <img src="frontend/public/logo.svg" alt="Hacktoberfest Copilot" width="80" />
 </p>
 
-<h1 align="center">🎃 Hacktoberfest Copilot</h1>
+<h1 align="center">Hacktoberfest Copilot</h1>
 
 <p align="center">
   <strong>AI-Powered Open-Source Contribution Assistant</strong>
@@ -43,18 +43,18 @@
 
 ---
 
-## 🧐 The Problem
+##  The Problem
 
 Open-source projects rely on community contributions, but many beginners struggle to make their first contribution. They face:
 
-- 🔍 **Discovery overload** — Thousands of issues, no idea which ones match their skill level
-- 📖 **Codebase confusion** — Unfamiliar project structures, languages, and conventions
-- 🤔 **Analysis paralysis** — Not knowing which files to change or how to approach a fix
-- 😰 **PR anxiety** — Unsure how to write a good pull request description
+-  **Discovery overload** — Thousands of issues, no idea which ones match their skill level
+-  **Codebase confusion** — Unfamiliar project structures, languages, and conventions
+-  **Analysis paralysis** — Not knowing which files to change or how to approach a fix
+-  **PR anxiety** — Unsure how to write a good pull request description
 
 **Result:** Many potential contributors abandon the process before their first PR.
 
-## 💡 The Solution
+##  The Solution
 
 **Hacktoberfest Copilot** is an AI-powered assistant that guides beginners from **discovering an issue** to **submitting a pull request**.
 
@@ -62,20 +62,20 @@ Paste any GitHub repository URL and the assistant will:
 
 | Feature | Description |
 |---------|-------------|
-| 🔍 **Issue Discovery** | Identify beginner-friendly issues with difficulty ratings |
-| 📊 **Skill Matching** | Categorize issues by required skills and estimated difficulty |
-| 🔎 **Interactive Search & Filters** | Real-time issue searching and difficulty filter pills (#29) |
-| 🌓 **Dark & Light Themes** | Accessible dual-theme system with persistent storage (#30) |
-| 🧠 **Plain-Language Explanations** | Rewrite complex issues in beginner-friendly language |
-| 📁 **File Mapping** | Identify the exact files and components involved |
-| 🛠️ **Step-by-Step Plans** | Generate a detailed implementation plan |
-| 🧪 **Test Suggestions** | Recommend appropriate tests & scaffolding for proposed changes |
-| 📝 **PR Generation** | Draft a professional pull request description |
-| 🚀 **Interactive PR Checklist** | Pre-flight readiness score & live GitHub PR launcher (#31) |
-| 📥 **Roadmap Export** | Download comprehensive roadmap as Markdown (.md) or printable PDF (#32) |
-| 💡 **Code Explanation** | Explain unfamiliar code and technologies |
+|  **Issue Discovery** | Identify beginner-friendly issues with difficulty ratings |
+|  **Skill Matching** | Categorize issues by required skills and estimated difficulty |
+|  **Interactive Search & Filters** | Real-time issue searching and difficulty filter pills (#29) |
+|  **Dark & Light Themes** | Accessible dual-theme system with persistent storage (#30) |
+|  **Plain-Language Explanations** | Rewrite complex issues in beginner-friendly language |
+|  **File Mapping** | Identify the exact files and components involved |
+|  **Step-by-Step Plans** | Generate a detailed implementation plan |
+|  **Test Suggestions** | Recommend appropriate tests & scaffolding for proposed changes |
+|  **PR Generation** | Draft a professional pull request description |
+|  **Interactive PR Checklist** | Pre-flight readiness score & live GitHub PR launcher (#31) |
+|  **Roadmap Export** | Download comprehensive roadmap as Markdown (.md) or printable PDF (#32) |
+|  **Code Explanation** | Explain unfamiliar code and technologies |
 
-## 🎬 Visual Walkthrough & Demo
+## Visual Walkthrough & Demo
 
 <p align="center">
   <img src="docs/assets/demo-preview.svg" alt="Hacktoberfest Copilot Demo Walkthrough" width="92%" />
@@ -101,7 +101,7 @@ Paste any GitHub repository URL and the assistant will:
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ 3. AI GUIDANCE HUB (Gemma 4 Powered)                                  │
-│    [🧠 Understand]   [🗺️ Implementation Plan]   [🧪 Tests]   [📝 PR]  │
+│    [Understand]   [ Implementation Plan]   [ Tests]   [ PR]  │
 │    ├─ Plain-English Breakdown & Jargon Explanations                   │
 │    ├─ Targeted File Tree & Component Pointers                         │
 │    ├─ Step-by-Step Action Roadmap & PR Checklist                      │
@@ -110,9 +110,9 @@ Paste any GitHub repository URL and the assistant will:
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-> 📚 **API Documentation:** Check out our [API Documentation Guide](docs/API.md) and import the [Postman Collection](docs/Hacktoberfest_Copilot.postman_collection.json) to test the backend endpoints directly.
+>  **API Documentation:** Check out our [API Documentation Guide](docs/API.md) and import the [Postman Collection](docs/Hacktoberfest_Copilot.postman_collection.json) to test the backend endpoints directly.
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -138,7 +138,7 @@ Paste any GitHub repository URL and the assistant will:
                      └──────────────┘
 ```
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -149,7 +149,7 @@ Paste any GitHub repository URL and the assistant will:
 | **DevOps** | Docker, GitHub Actions CI/CD |
 | **Deployment** | Vercel (frontend) + Railway/Render (backend) |
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -211,7 +211,7 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 docker-compose up --build
 ```
 
-## 🌐 Live Cloud Deployment Guide
+## Live Cloud Deployment Guide
 
 Hacktoberfest Copilot is engineered for 1-click zero-config deployment to modern cloud infrastructure:
 
@@ -230,7 +230,7 @@ Hacktoberfest Copilot is engineered for 1-click zero-config deployment to modern
    - `CORS_ORIGINS`: `https://your-frontend.vercel.app`
 3. Verify health status: `GET /api/health` returns `{"status": "healthy"}`.
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 HacktoberFest-Team-GrandCoders/
@@ -264,7 +264,7 @@ HacktoberFest-Team-GrandCoders/
 └── README.md                  # This file
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before getting started.
 
@@ -287,11 +287,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 | **Khushhal Kumar Bansal** | Full-Stack & DevOps | Manipal University Jaipur | [@Khushhalbansal](https://github.com/Khushhalbansal) | khushhalbansalb2@gmail.com |
 
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [Hacktoberfest](https://hacktoberfest.com/) for inspiring open-source contributions
 - [Google AI Studio](https://aistudio.google.com/) for providing access to Gemma 4
