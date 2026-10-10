@@ -122,3 +122,18 @@ def test_ttl_cache_lifecycle():
     assert cache.size() == 0
     assert cache.get("key1") is None
 
+
+def test_ai_service_threadpool_execution(monkeypatch):
+    """Ensure ai_service._generate delegates content generation without blocking the event loop."""
+    import asyncio
+    from unittest.mock import MagicMock
+    from app.services.ai_service import ai_service
+
+    mock_model = MagicMock()
+    mock_model.generate_content.return_value = MagicMock(text="Mocked AI response")
+    monkeypatch.setattr(ai_service, "_get_model", lambda: mock_model)
+
+    res = asyncio.run(ai_service._generate("test prompt"))
+    assert res == "Mocked AI response"
+    mock_model.generate_content.assert_called_once_with("test prompt")
+

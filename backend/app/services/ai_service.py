@@ -10,6 +10,7 @@ Handles all AI-powered features:
 """
 
 import os
+import asyncio
 import google.generativeai as genai
 from app.config import settings
 
@@ -35,10 +36,10 @@ class AIService:
         return self._model
 
     async def _generate(self, prompt: str) -> str:
-        """Generate a response from Gemma 4."""
+        """Generate a response from Gemma 4 asynchronously in a worker thread."""
         try:
             model = self._get_model()
-            response = model.generate_content(prompt)
+            response = await asyncio.to_thread(model.generate_content, prompt)
             return response.text
         except Exception as e:
             return f"AI service temporarily unavailable: {str(e)}"
