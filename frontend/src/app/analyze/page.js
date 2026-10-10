@@ -75,19 +75,25 @@ function AnalyzeContent() {
     fetchRepoData();
   }, [repoUrl, router]);
 
-  // Derive difficulty and filtered issues
   const allIssues = useMemo(() => {
-    if (!data?.beginner_issues) return [];
-    return data.beginner_issues.map((issue) => {
-      // Determine level based on labels or content
+    if (!data) return [];
+    
+    const combined = [...(data.all_open_issues || []), ...(data.beginner_issues || [])];
+    const uniqueMap = new Map();
+    combined.forEach((issue) => {
+      uniqueMap.set(issue.number, issue);
+    });
+    const uniqueIssues = Array.from(uniqueMap.values());
+
+    return uniqueIssues.map((issue) => {
       const labelNames = (issue.labels || []).map((l) => (typeof l === 'string' ? l.toLowerCase() : ''));
-      let difficulty = 'BEGINNER';
+      let difficulty = 'INTERMEDIATE';
       if (labelNames.some((l) => l.includes('hard') || l.includes('advanced') || l.includes('expert'))) {
         difficulty = 'ADVANCED';
-      } else if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted'))) {
-        difficulty = 'INTERMEDIATE';
       } else if (labelNames.some((l) => l.includes('good first') || l.includes('beginner') || l.includes('easy') || l.includes('starter'))) {
         difficulty = 'BEGINNER';
+      } else if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted'))) {
+        difficulty = 'INTERMEDIATE';
       }
       return {
         ...issue,
@@ -178,7 +184,7 @@ function AnalyzeContent() {
           <div className="repo-card__stats">
             <span className="repo-card__stat">⭐ {data.repo.stars?.toLocaleString() || 0} stars</span>
             <span className="repo-card__stat">🍴 {data.repo.forks?.toLocaleString() || 0} forks</span>
-            <span className="repo-card__stat">🟢 {data.repo.open_issues_count?.toLocaleString() || 0} issues</span>
+            <span className="repo-card__stat">🟢 {data.repo.open_issues_count?.toLocaleString() || 0} issues & PRs</span>
           </div>
         </div>
 

@@ -179,7 +179,7 @@ class GitHubClient:
         repo_url: str,
         labels: str = "",
         state: str = "open",
-        per_page: int = 30,
+        per_page: int = 100,
     ) -> list[dict]:
         """Fetch issues from the repository."""
         owner, repo = self._parse_repo_url(repo_url)
