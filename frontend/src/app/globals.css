@@ -801,6 +801,24 @@ input, textarea {
   margin-bottom: 6px;
 }
 
+.nb-logs-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.nb-logs-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: var(--nb-mint-bg);
+  color: #065F46;
+  padding: 1px 6px;
+  border: 1px solid #000000;
+  border-radius: 3px;
+}
+
 .nb-log-entry {
   display: flex;
   align-items: center;
@@ -808,23 +826,34 @@ input, textarea {
   padding: 3px 0;
 }
 
+.nb-log-repo {
+  font-size: 0.72rem;
+  color: var(--nb-text-muted);
+  font-weight: 500;
+}
+
 .nb-log-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--nb-black);
+  flex-shrink: 0;
 }
 
+.nb-log-dot--merged,
 .nb-log-entry--merged .nb-log-dot {
-  background: #10B981;
+  background: #10B981 !important;
+  box-shadow: 0 0 4px #10B981;
 }
 
+.nb-log-dot--review,
 .nb-log-entry--review .nb-log-dot {
-  background: var(--nb-yellow);
+  background: var(--nb-yellow) !important;
 }
 
+.nb-log-dot--pending,
 .nb-log-entry--pending .nb-log-dot {
-  background: var(--nb-blue);
+  background: var(--nb-blue) !important;
 }
 
 /* 2. Pipeline Status Widget */
@@ -847,11 +876,78 @@ input, textarea {
 }
 
 .nb-pipeline-status__grid {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
   padding-top: 10px;
+}
+
+.nb-pipeline-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+  border-radius: 4px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.nb-pipeline-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.nb-pipeline-card__label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: var(--nb-text-muted);
+}
+
+.nb-pipeline-card__val {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--nb-blue);
+  background: #EFF6FF;
+  border: 1px solid #93C5FD;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+.nb-pipeline-card__desc {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin-top: 6px;
+  white-space: nowrap;
+}
+
+.nb-pipeline-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1.5px dashed #000000;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--nb-text-muted);
+}
+
+.nb-pipeline-footer__stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 /* Bar Chart */

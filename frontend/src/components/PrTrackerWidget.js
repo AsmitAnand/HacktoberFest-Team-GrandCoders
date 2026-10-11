@@ -98,20 +98,43 @@ export default function PrTrackerWidget({ onOpenPrModal }) {
           </div>
         </div>
 
-        {/* Logs Feed */}
+        {/* Logs Feed with Explicit Done / Remaining Breakdown */}
         <div className="nb-pr-tracker__logs">
-          <div className="nb-logs-title">Logs:</div>
-          <div className="nb-log-entry nb-log-entry--merged">
-            <span className="nb-log-dot" />
-            <span className="nb-log-text"><strong>PR-1024:</strong> Merged</span>
+          <div className="nb-logs-title-row">
+            <span className="nb-logs-title">Challenge Status:</span>
+            <span className="nb-logs-badge">2 Merged / 2 To Go</span>
           </div>
-          <div className="nb-log-entry nb-log-entry--review">
-            <span className="nb-log-dot" />
-            <span className="nb-log-text"><strong>PR-1025:</strong> In Review</span>
+
+          {/* 1. Done: PR #1024 */}
+          <div className="nb-log-entry nb-log-entry--merged" title="Brownie-Bliss #1024: resolve hotlinked product images and footer links">
+            <span className="nb-log-dot nb-log-dot--merged" />
+            <span className="nb-log-text">
+              <strong>#1024:</strong> Merged <span className="nb-log-repo">(Brownie-Bliss)</span>
+            </span>
           </div>
-          <div className="nb-log-entry nb-log-entry--pending">
-            <span className="nb-log-dot" />
-            <span className="nb-log-text"><strong>PR-1026:</strong> Drafted</span>
+
+          {/* 2. Done: PR #1018 */}
+          <div className="nb-log-entry nb-log-entry--merged" title="Brownie-Bliss #1018: cart coupon discount logic">
+            <span className="nb-log-dot nb-log-dot--merged" />
+            <span className="nb-log-text">
+              <strong>#1018:</strong> Merged <span className="nb-log-repo">(Brownie-Bliss)</span>
+            </span>
+          </div>
+
+          {/* 3. In Progress: PR #1025 */}
+          <div className="nb-log-entry nb-log-entry--review" title="Brownie-Bliss #1025: checkout rounding discrepancy">
+            <span className="nb-log-dot nb-log-dot--review" />
+            <span className="nb-log-text">
+              <strong>#1025:</strong> In Review <span className="nb-log-repo">(Brownie-Bliss)</span>
+            </span>
+          </div>
+
+          {/* 4. In Progress: PR #1026 */}
+          <div className="nb-log-entry nb-log-entry--pending" title="FastAPI #1026: async test override documentation">
+            <span className="nb-log-dot nb-log-dot--pending" />
+            <span className="nb-log-text">
+              <strong>#1026:</strong> Drafted <span className="nb-log-repo">(FastAPI)</span>
+            </span>
           </div>
         </div>
       </div>

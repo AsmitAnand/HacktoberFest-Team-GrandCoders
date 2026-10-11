@@ -28,7 +28,7 @@ export default function RoadmapSubway() {
 
           {/* Base Yellow Track Path */}
           <path
-            d="M50 95 H180 V40 H280 V95 H380 H440"
+            d="M50 95 H180 V40 H280 V95 H380 V40 H440"
             stroke="#FFC72C"
             strokeWidth="8"
             strokeLinecap="round"
@@ -37,7 +37,7 @@ export default function RoadmapSubway() {
 
           {/* Dynamic Laser Beam Stream */}
           <path
-            d="M50 95 H180 V40 H280 V95 H380 H440"
+            d="M50 95 H180 V40 H280 V95 H380 V40 H440"
             stroke="#FF5436"
             strokeWidth="4"
             strokeDasharray="12 12"
@@ -50,14 +50,14 @@ export default function RoadmapSubway() {
           <g>
             <circle r="7" fill="#1047BF" stroke="#FFFFFF" strokeWidth="2.5">
               <animateMotion
-                path="M50 95 H180 V40 H280 V95 H380 H440"
+                path="M50 95 H180 V40 H280 V95 H380 V40 H440"
                 dur="5.5s"
                 repeatCount="indefinite"
               />
             </circle>
             <circle r="3.5" fill="#FFC72C">
               <animateMotion
-                path="M50 95 H180 V40 H280 V95 H380 H440"
+                path="M50 95 H180 V40 H280 V95 H380 V40 H440"
                 dur="5.5s"
                 repeatCount="indefinite"
               />
