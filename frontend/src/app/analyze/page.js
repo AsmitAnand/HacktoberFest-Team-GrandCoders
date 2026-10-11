@@ -23,7 +23,7 @@ function AnalyzeContent() {
       return;
     }
 
-    const cacheKey = `hf_analysis_v2_${encodeURIComponent(repoUrl)}`;
+    const cacheKey = `hf_analysis_v3_${encodeURIComponent(repoUrl)}`;
 
     // Try reading from sessionStorage for instant page back/forward navigation
     try {
@@ -87,17 +87,43 @@ function AnalyzeContent() {
 
     return uniqueIssues.map((issue) => {
       const labelNames = (issue.labels || []).map((l) => (typeof l === 'string' ? l.toLowerCase() : ''));
-      let difficulty = 'INTERMEDIATE';
-      if (labelNames.some((l) => l.includes('good first') || l.includes('beginner') || l.includes('easy') || l.includes('starter') || l.includes('level1'))) {
-        difficulty = 'BEGINNER';
-      } else if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted') || l.includes('level2'))) {
-        difficulty = 'INTERMEDIATE';
-      } else if (labelNames.some((l) => l.includes('hard') || l.includes('advanced') || l.includes('expert') || l.includes('level3'))) {
-        difficulty = 'ADVANCED';
+      const text = `${issue.title || ''} ${issue.body || ''}`.toLowerCase();
+
+      // 1. Explicit Labels
+      if (labelNames.some((l) => l.includes('hard') || l.includes('advanced') || l.includes('expert') || l.includes('level3'))) {
+        return { ...issue, difficulty: 'ADVANCED' };
       }
+      if (labelNames.some((l) => l.includes('good first') || l.includes('beginner') || l.includes('easy') || l.includes('starter') || l.includes('first-timers-only') || l.includes('level1') || l.includes('doc'))) {
+        return { ...issue, difficulty: 'BEGINNER' };
+      }
+      if (labelNames.some((l) => l.includes('medium') || l.includes('intermediate') || l.includes('help wanted') || l.includes('level2'))) {
+        return { ...issue, difficulty: 'INTERMEDIATE' };
+      }
+
+      // 2. Advanced Keywords in title/body (security, auth, rate-limit, CI/CD, database)
+      const advKeywords = [
+        'security', 'vulnerability', 'rate limit', 'brute', 'auth', 'jwt',
+        'ci', 'github actions', 'pipeline', 'docker', 'concurrency', 'database',
+        'migration', 'performance', 'payment', 'encrypt', 'leak', 'injection', 'cors'
+      ];
+      if (advKeywords.some((k) => new RegExp(`\\b${k}\\b`, 'i').test(text))) {
+        return { ...issue, difficulty: 'ADVANCED' };
+      }
+
+      // 3. Beginner Keywords in title/body (docs, text, css, styling, typos, assets)
+      const begKeywords = [
+        'typo', 'doc', 'docs', 'readme', 'spelling', 'link', 'links', 'footer',
+        'color', 'contrast', 'icon', 'logo', 'image', 'images', 'pics', 'grammar',
+        'css', 'style', 'text', 'asset', 'comment', 'broken ui', 'overflow', 'responsive'
+      ];
+      if (begKeywords.some((k) => new RegExp(`\\b${k}\\b`, 'i').test(text))) {
+        return { ...issue, difficulty: 'BEGINNER' };
+      }
+
+      // Default for standard feature requests & enhancements
       return {
         ...issue,
-        difficulty,
+        difficulty: 'INTERMEDIATE',
       };
     });
   }, [data]);
