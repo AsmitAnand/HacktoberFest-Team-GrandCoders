@@ -279,13 +279,30 @@ input, textarea {
 
 .nb-nav-item--cmd {
   margin-top: auto;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1.5px dashed rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.32);
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all var(--transition-fast);
 }
 
 .nb-nav-item--cmd:hover {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.5);
+  border-color: var(--nb-yellow);
+  transform: translate(-1px, -1px);
+}
+
+.nb-nav-item--cmd .nb-kbd {
+  background: var(--nb-yellow) !important;
+  color: #000000 !important;
+  border: 1.5px solid #000000 !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+  font-weight: 800 !important;
+  font-size: 0.74rem !important;
+  padding: 3px 7px !important;
+  border-radius: 3px !important;
 }
 
 /* Sidebar Circuit Diagram */
@@ -1894,6 +1911,7 @@ input, textarea {
   font-size: 0.72rem;
   font-weight: 700;
   background: var(--nb-card-alt);
+  color: #000000 !important;
   border: 1px solid #000000;
   box-shadow: 1px 1px 0px #000000;
   padding: 2px 6px;
