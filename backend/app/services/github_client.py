@@ -180,32 +180,50 @@ class GitHubClient:
         labels: str = "",
         state: str = "open",
         per_page: int = 100,
+        max_pages: int = 1,
     ) -> list[dict]:
-        """Fetch issues from the repository."""
+        """Fetch issues from the repository with optional parallel pagination."""
         owner, repo = self._parse_repo_url(repo_url)
-        params = {"state": state, "per_page": per_page}
-        if labels:
-            params["labels"] = labels
 
-        try:
-            data = await self._get(f"/repos/{owner}/{repo}/issues", params=params)
-            return [
-                {
-                    "number": issue["number"],
-                    "title": issue["title"],
-                    "body": issue.get("body", ""),
-                    "labels": [label["name"] for label in issue.get("labels", [])],
-                    "state": issue["state"],
-                    "html_url": issue["html_url"],
-                    "created_at": issue.get("created_at", ""),
-                    "user": issue.get("user", {}).get("login", ""),
-                    "comments": issue.get("comments", 0),
-                }
-                for issue in data
-                if "pull_request" not in issue  # Filter out PRs
-            ]
-        except httpx.HTTPStatusError:
-            return []
+        async def _fetch_page(page_num: int) -> list[dict]:
+            params = {"state": state, "per_page": per_page, "page": page_num}
+            if labels:
+                params["labels"] = labels
+            try:
+                data = await self._get(f"/repos/{owner}/{repo}/issues", params=params)
+                return [
+                    {
+                        "number": issue["number"],
+                        "title": issue["title"],
+                        "body": issue.get("body", ""),
+                        "labels": [label["name"] for label in issue.get("labels", [])],
+                        "state": issue["state"],
+                        "html_url": issue["html_url"],
+                        "created_at": issue.get("created_at", ""),
+                        "user": issue.get("user", {}).get("login", ""),
+                        "comments": issue.get("comments", 0),
+                    }
+                    for issue in data
+                    if "pull_request" not in issue  # Filter out PRs
+                ]
+            except (httpx.HTTPStatusError, httpx.RequestError):
+                return []
+
+        if max_pages <= 1:
+            return await _fetch_page(1)
+
+        import asyncio
+        tasks = [_fetch_page(p) for p in range(1, max_pages + 1)]
+        results = await asyncio.gather(*tasks)
+
+        all_issues = []
+        seen = set()
+        for page_data in results:
+            for issue in page_data:
+                if issue["number"] not in seen:
+                    seen.add(issue["number"])
+                    all_issues.append(issue)
+        return all_issues
 
     async def get_beginner_issues(self, repo_url: str) -> list[dict]:
         """

@@ -31,20 +31,24 @@ async def analyze_repo(request: RepoAnalyzeRequest):
     """
     try:
         import asyncio
+        # Fetch repo metadata first to determine total issue/PR count for dynamic pagination
+        repo_data = await github_client.get_repo(request.repo_url)
+        total_open = repo_data.get("open_issues_count", 100)
+        # 100 items per page; fetch up to 10 pages concurrently (covering up to 1000 issues)
+        pages_to_fetch = min(10, max(1, (total_open + 99) // 100))
+
         (
-            repo_data,
             file_tree_data,
             readme_raw,
             contributing_raw,
             beginner_issues,
             all_issues,
         ) = await asyncio.gather(
-            github_client.get_repo(request.repo_url),
             github_client.get_file_tree(request.repo_url),
             github_client.get_readme(request.repo_url),
             github_client.get_contributing(request.repo_url),
             github_client.get_beginner_issues(request.repo_url),
-            github_client.get_issues(request.repo_url),
+            github_client.get_issues(request.repo_url, max_pages=pages_to_fetch),
         )
 
         # Use AI to summarize and detect tech stack

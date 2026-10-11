@@ -23,7 +23,7 @@ function AnalyzeContent() {
       return;
     }
 
-    const cacheKey = `hf_analysis_v3_${encodeURIComponent(repoUrl)}`;
+    const cacheKey = `hf_analysis_v4_${encodeURIComponent(repoUrl)}`;
 
     // Try reading from sessionStorage for instant page back/forward navigation
     try {
@@ -210,7 +210,10 @@ function AnalyzeContent() {
           <div className="repo-card__stats">
             <span className="repo-card__stat">⭐ {data.repo.stars?.toLocaleString() || 0} stars</span>
             <span className="repo-card__stat">🍴 {data.repo.forks?.toLocaleString() || 0} forks</span>
-            <span className="repo-card__stat">🟢 {data.repo.open_issues_count?.toLocaleString() || 0} issues & PRs</span>
+            <span className="repo-card__stat">🟢 {difficultyCounts.ALL?.toLocaleString() || 0} open issues</span>
+            {data.repo.open_issues_count > difficultyCounts.ALL && (
+              <span className="repo-card__stat">🔀 {(data.repo.open_issues_count - difficultyCounts.ALL)?.toLocaleString()} open PRs</span>
+            )}
           </div>
         </div>
 
