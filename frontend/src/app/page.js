@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import PrTrackerWidget from '../components/PrTrackerWidget';
+import PipelineStatusWidget from '../components/PipelineStatusWidget';
+import ExamplePresetsWidget from '../components/ExamplePresetsWidget';
+import RoadmapSubway from '../components/RoadmapSubway';
 
 export default function Home() {
   const [repoUrl, setRepoUrl] = useState('');
@@ -9,15 +13,14 @@ export default function Home() {
   const router = useRouter();
 
   const POPULAR_REPOS = [
-    { name: 'facebook/react', url: 'https://github.com/facebook/react', icon: '⚛️' },
-    { name: 'fastapi/fastapi', url: 'https://github.com/fastapi/fastapi', icon: '⚡' },
-    { name: 'pallets/flask', url: 'https://github.com/pallets/flask', icon: '🌶️' },
-    { name: 'vercel/next.js', url: 'https://github.com/vercel/next.js', icon: '▲' },
+    { name: 'adithyan-css/Brownie-Bliss', url: 'https://github.com/adithyan-css/Brownie-Bliss', icon: '🧁', badge: '569 Issues' },
+    { name: 'fastapi/fastapi', url: 'https://github.com/fastapi/fastapi', icon: '⚡', badge: 'Python' },
+    { name: 'facebook/react', url: 'https://github.com/facebook/react', icon: '⚛️', badge: 'UI' },
+    { name: 'vercel/next.js', url: 'https://github.com/vercel/next.js', icon: '▲', badge: 'Fullstack' },
   ];
 
   const [recentRepos, setRecentRepos] = useState([]);
 
-  // Load recent repos from localStorage and register '/' shortcut
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('hf_recent_repos') || '[]');
@@ -81,215 +84,200 @@ export default function Home() {
   };
 
   return (
-    <div className="container">
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero__badge">
-          <span className="hero__badge-dot" aria-hidden="true" />
-          Powered by Gemma 4 & GitHub API
-        </div>
-
-        <h1 className="hero__title">
-          Open-Source Contribution,{' '}
-          <span className="hero__title-gradient">Simplified.</span>
-        </h1>
-
-        <p className="hero__subtitle">
-          Don&apos;t know where to start? Hacktoberfest Copilot analyzes any repository,
-          finds beginner-friendly issues, and generates a step-by-step plan to
-          help you create your first pull request.
-        </p>
-
-        {/* Repo Input */}
-        <form className="repo-input" onSubmit={handleSubmit}>
-          <div className="repo-input__wrapper">
-            <span className="repo-input__icon" aria-hidden="true">
-              🔍
-            </span>
-            <input
-              type="url"
-              className="repo-input__field"
-              placeholder="Paste a GitHub repository URL (e.g., https://github.com/owner/repo) — press '/' to focus"
-              value={repoUrl}
-              onChange={(e) => setRepoUrl(e.target.value)}
-              required
-              id="repo-url-input"
-            />
-            <button
-              type="submit"
-              className={`repo-input__btn ${isLoading ? 'repo-input__btn--loading' : ''}`}
-              disabled={isLoading || !repoUrl}
-              id="analyze-btn"
-            >
-              {isLoading ? 'Analyzing...' : 'Analyze Repo'}
-            </button>
+    <div className="nb-home-container">
+      {/* ─── PRIMARY REFERENCE DASHBOARD GRID (Matching Reference Image) ─── */}
+      <section className="nb-primary-grid">
+        {/* Left/Center Box: REPOSITORY ANALYZER */}
+        <div className="nb-card nb-analyzer-main">
+          <div className="nb-analyzer-main__header">
+            <span className="nb-tag-tech">AI REPOSITORY ENGINE</span>
+            <span className="nb-label-tracked">REPOSITORY ANALYZER</span>
           </div>
-        </form>
 
-        {/* Quick Start Popular Repos */}
-        <div className="quick-repos">
-          <span className="quick-repos__label">Quick Start:</span>
-          <div className="quick-repos__chips">
-            {POPULAR_REPOS.map((item) => (
+          {/* Neo-Brutalist Input Bar */}
+          <form className="nb-search-form" onSubmit={handleSubmit}>
+            <div className="nb-search-input-box">
+              <span className="nb-search-icon" aria-hidden="true">🔍</span>
+              <input
+                type="text"
+                className="nb-search-input"
+                placeholder="example-org/starter-kit"
+                value={repoUrl}
+                onChange={(e) => setRepoUrl(e.target.value)}
+                required
+                id="repo-url-input"
+              />
               <button
-                key={item.url}
-                type="button"
-                className="quick-repo-chip"
-                onClick={() => handleQuickSelect(item.url)}
+                type="submit"
+                className={`nb-search-submit-btn ${isLoading ? 'nb-search-submit-btn--loading' : ''}`}
+                disabled={isLoading || !repoUrl}
+                id="analyze-btn"
               >
-                <span>{item.icon}</span>
-                <span>{item.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent Search History */}
-        {recentRepos.length > 0 && (
-          <div className="recent-repos">
-            <div className="recent-repos__header">
-              <span className="recent-repos__label">Recent Repositories</span>
-              <button
-                type="button"
-                className="recent-repos__clear"
-                onClick={handleClearRecent}
-                aria-label="Clear recent repositories"
-              >
-                Clear
+                {isLoading ? 'Scanning...' : 'Analyze →'}
               </button>
             </div>
-            <div className="recent-repos__chips">
-              {recentRepos.map((url) => {
-                const shortLabel = url.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
-                return (
-                  <button
-                    key={url}
-                    type="button"
-                    className="recent-repo-chip"
-                    onClick={() => handleQuickSelect(url)}
-                    title={url}
-                  >
-                    <span>🕒</span>
-                    <span>{shortLabel}</span>
-                  </button>
-                );
-              })}
+          </form>
+
+          {/* Hero Headline with Bauhaus Decals */}
+          <div className="nb-hero-headline-wrap">
+            <div className="nb-hero-text-col">
+              <h1 className="nb-hero-headline">
+                Contribution,<br />
+                Simplified.
+              </h1>
+              <p className="nb-hero-subtext">
+                Turn open-source intimidation into confident pull requests with Google Gemma 4 roadmaps, issue difficulty classifiers, and test scaffolding.
+              </p>
+            </div>
+
+            {/* Layered Bauhaus Yellow & Red Squares */}
+            <div className="nb-bauhaus-decals" aria-hidden="true">
+              <div className="nb-decal-box nb-decal-box--yellow" />
+              <div className="nb-decal-box nb-decal-box--red" />
             </div>
           </div>
-        )}
-      </section>
 
-      {/* Features Grid */}
-      <section className="features" id="features">
-        <h2 className="features__title">Your Open-Source Mentor</h2>
-        <p className="features__subtitle">
-          Everything you need to confidently make your first contribution.
-        </p>
+          {/* Contribution Roadmap Subway Graph */}
+          <RoadmapSubway />
+        </div>
 
-        <div className="features__grid stagger-children">
-          <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">🎯</span>
-            <h3 className="feature-card__title">Issue Discovery</h3>
-            <p className="feature-card__desc">
-              We automatically scan repositories to find issues specifically labeled
-              for beginners, saving you hours of searching.
-            </p>
-          </div>
-
-          <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">🧠</span>
-            <h3 className="feature-card__title">Plain-English Explanations</h3>
-            <p className="feature-card__desc">
-              Gemma 4 translates complex technical jargon into simple,
-              easy-to-understand explanations of what needs to be done.
-            </p>
-          </div>
-
-          <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">🗺️</span>
-            <h3 className="feature-card__title">Step-by-Step Plans</h3>
-            <p className="feature-card__desc">
-              Get a detailed implementation plan that tells you exactly which
-              files to modify and what changes to make.
-            </p>
-          </div>
-
-          <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">🧪</span>
-            <h3 className="feature-card__title">Test Suggestions</h3>
-            <p className="feature-card__desc">
-              Get recommended test frameworks, targeted test cases, and runnable code scaffolding
-              to verify changes locally.
-            </p>
-          </div>
-
-          <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">🚀</span>
-            <h3 className="feature-card__title">PR Checklist & Preview</h3>
-            <p className="feature-card__desc">
-              Verify pre-flight contribution readiness with an interactive checklist and
-              generate ready-to-merge PR descriptions.
-            </p>
-          </div>
-
-          <div className="feature-card animate-fade-in-up">
-            <span className="feature-card__icon" aria-hidden="true">📥</span>
-            <h3 className="feature-card__title">Roadmap Export</h3>
-            <p className="feature-card__desc">
-              Export and share your entire customized AI contribution roadmap as a clean
-              Markdown (.md) file or printable PDF.
-            </p>
-          </div>
+        {/* Right Stack: PR Tracker + Pipeline Status + Example Presets */}
+        <div className="nb-widgets-col">
+          <PrTrackerWidget />
+          <PipelineStatusWidget />
+          <ExamplePresetsWidget onSelectPreset={handleQuickSelect} />
         </div>
       </section>
 
-      {/* How it Works */}
-      <section className="steps-section" id="how-it-works">
-        <h2 className="steps-section__title">How It Works</h2>
-
-        <div className="steps stagger-children">
-          <div className="step animate-slide-in-right">
-            <div className="step__number">1</div>
-            <div className="step__content">
-              <h3 className="step__title">Find a Repository</h3>
-              <p className="step__desc">
-                Paste the URL of any public GitHub repository you&apos;d like to
-                contribute to.
-              </p>
+      {/* ─── QUICK REPOS & RECENT SEARCHES BAR ─── */}
+      <section className="nb-quick-bar">
+        <div className="nb-quick-bar__inner">
+          <div className="nb-quick-group">
+            <span className="nb-quick-label">⚡ Popular Repos:</span>
+            <div className="nb-chips-row">
+              {POPULAR_REPOS.map((item) => (
+                <button
+                  key={item.url}
+                  type="button"
+                  className="nb-chip-btn"
+                  onClick={() => handleQuickSelect(item.url)}
+                >
+                  <span className="nb-chip-icon">{item.icon}</span>
+                  <span className="nb-chip-name">{item.name}</span>
+                  <span className="nb-chip-badge">{item.badge}</span>
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="step animate-slide-in-right">
-            <div className="step__number">2</div>
-            <div className="step__content">
-              <h3 className="step__title">Pick an Issue</h3>
-              <p className="step__desc">
-                Browse through beginner-friendly issues curated by our AI based on
-                your skill level.
-              </p>
+          {recentRepos.length > 0 && (
+            <div className="nb-quick-group nb-quick-group--recent">
+              <div className="nb-recent-header">
+                <span className="nb-quick-label">🕒 Recent:</span>
+                <button
+                  type="button"
+                  className="nb-clear-btn"
+                  onClick={handleClearRecent}
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="nb-chips-row">
+                {recentRepos.map((url) => {
+                  const shortLabel = url.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
+                  return (
+                    <button
+                      key={url}
+                      type="button"
+                      className="nb-chip-btn nb-chip-btn--recent"
+                      onClick={() => handleQuickSelect(url)}
+                      title={url}
+                    >
+                      <span>{shortLabel}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+          )}
+        </div>
+      </section>
+
+      {/* ─── NEO-BRUTALIST FEATURES GRID ─── */}
+      <section className="nb-features-section" id="features">
+        <div className="nb-section-header">
+          <span className="nb-tag-badge">CORE CAPABILITIES</span>
+          <h2 className="nb-section-title">Everything Needed for Hacktoberfest Success</h2>
+          <p className="nb-section-desc">
+            No more wandering through massive codebases wondering where to begin.
+          </p>
+        </div>
+
+        <div className="nb-features-grid">
+          <div className="nb-card nb-feature-box">
+            <div className="nb-feature-box__top">
+              <span className="nb-feature-icon">🎯</span>
+              <span className="nb-feature-tag">01 / DISCOVERY</span>
+            </div>
+            <h3 className="nb-feature-title">Smart Issue Discovery</h3>
+            <p className="nb-feature-desc">
+              Paginates concurrently through all open issues (even 500+ issues), filtering good first issues, documentation fixes, and triage tickets.
+            </p>
           </div>
 
-          <div className="step animate-slide-in-right">
-            <div className="step__number">3</div>
-            <div className="step__content">
-              <h3 className="step__title">Follow the Plan</h3>
-              <p className="step__desc">
-                Read the AI-generated implementation plan, fork the repo, and make
-                your code changes.
-              </p>
+          <div className="nb-card nb-feature-box">
+            <div className="nb-feature-box__top">
+              <span className="nb-feature-icon">🧠</span>
+              <span className="nb-feature-tag">02 / EXPLANATION</span>
             </div>
+            <h3 className="nb-feature-title">Plain-English Explanations</h3>
+            <p className="nb-feature-desc">
+              Gemma 4 strips away confusing maintainer shorthand and explains the problem in clear, plain language with why it matters.
+            </p>
           </div>
 
-          <div className="step animate-slide-in-right">
-            <div className="step__number">4</div>
-            <div className="step__content">
-              <h3 className="step__title">Submit your PR</h3>
-              <p className="step__desc">
-                Use our generated PR description to submit your work and celebrate
-                your Hacktoberfest contribution! 🎉
-              </p>
+          <div className="nb-card nb-feature-box">
+            <div className="nb-feature-box__top">
+              <span className="nb-feature-icon">🗺️</span>
+              <span className="nb-feature-tag">03 / ROADMAP</span>
             </div>
+            <h3 className="nb-feature-title">Step-by-Step Plans</h3>
+            <p className="nb-feature-desc">
+              Receive a concrete implementation roadmap specifying exact file paths to open, functions to alter, and expected code changes.
+            </p>
+          </div>
+
+          <div className="nb-card nb-feature-box">
+            <div className="nb-feature-box__top">
+              <span className="nb-feature-icon">🧪</span>
+              <span className="nb-feature-tag">04 / TESTING</span>
+            </div>
+            <h3 className="nb-feature-title">Automated Test Scaffolding</h3>
+            <p className="nb-feature-desc">
+              Suggests pytest / jest unit test cases tailored to your changes so your PR passes maintainer CI tests on the first try.
+            </p>
+          </div>
+
+          <div className="nb-card nb-feature-box">
+            <div className="nb-feature-box__top">
+              <span className="nb-feature-icon">🚀</span>
+              <span className="nb-feature-tag">05 / PR GENERATOR</span>
+            </div>
+            <h3 className="nb-feature-title">1-Click PR Descriptions</h3>
+            <p className="nb-feature-desc">
+              Generates a professional GitHub markdown pull request template with linked issues, checklist items, and test evidence.
+            </p>
+          </div>
+
+          <div className="nb-card nb-feature-box">
+            <div className="nb-feature-box__top">
+              <span className="nb-feature-icon">⚡</span>
+              <span className="nb-feature-tag">06 / VERIFIED MERGE</span>
+            </div>
+            <h3 className="nb-feature-title">Hacktoberfest Compliant</h3>
+            <p className="nb-feature-desc">
+              Ensures your contributions meet official quality rules, prevent spam flags, and count directly toward your Hacktoberfest badge.
+            </p>
           </div>
         </div>
       </section>

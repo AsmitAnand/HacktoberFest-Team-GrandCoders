@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 function AnalyzeContent() {
   const searchParams = useSearchParams();
@@ -199,9 +200,12 @@ function AnalyzeContent() {
 
   return (
     <div className="container dashboard animate-fade-in">
-      <Link href="/" className="dashboard__back">
-        ← Back to Search
-      </Link>
+      <div className="nb-top-nav-row">
+        <Breadcrumbs items={[{ label: data.repo?.full_name || 'Repository Analyzer', href: null }]} />
+        <Link href="/" className="dashboard__back">
+          ← Back to Search
+        </Link>
+      </div>
 
       {/* Repo Summary Card */}
       <div className="repo-card">

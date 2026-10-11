@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Breadcrumbs from '../../../components/Breadcrumbs';
 import Toast from '../../../components/Toast';
 import PrChecklistModal from '../../../components/PrChecklistModal';
 import ExportRoadmapButton from '../../../components/ExportRoadmapButton';
@@ -191,21 +192,27 @@ function IssueContent({ params }) {
 
   return (
     <div className="container issue-detail animate-fade-in printable-area">
-      <div className="issue-detail__top-nav">
-        <Link href={`/analyze?url=${encodeURIComponent(repoUrl)}`} className="dashboard__back">
-          ← Back to Repository
-        </Link>
-        
-        {/* Export Roadmap Dropdown (Issue #32) */}
-        <ExportRoadmapButton
-          repoUrl={repoUrl}
-          issueNumber={issueNumber}
-          explainData={explainData}
-          planData={planData}
-          testsData={testsData}
-          prData={prData}
-          onShowToast={(t) => setToast(t)}
+      <div className="nb-top-nav-row">
+        <Breadcrumbs 
+          items={[
+            { label: 'Repository Analyzer', href: `/analyze?url=${encodeURIComponent(repoUrl)}` },
+            { label: `Issue #${issueNumber}`, href: null }
+          ]} 
         />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <ExportRoadmapButton
+            repoUrl={repoUrl}
+            issueNumber={issueNumber}
+            explainData={explainData}
+            planData={planData}
+            testsData={testsData}
+            prData={prData}
+            onShowToast={(t) => setToast(t)}
+          />
+          <Link href={`/analyze?url=${encodeURIComponent(repoUrl)}`} className="dashboard__back">
+            ← Back to Repository
+          </Link>
+        </div>
       </div>
 
       <div className="issue-detail__header">
