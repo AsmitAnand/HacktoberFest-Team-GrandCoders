@@ -71,8 +71,7 @@ export default function RootLayout({ children }) {
               (function() {
                 try {
                   var saved = localStorage.getItem('theme');
-                  var pref = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-                  var theme = saved || pref;
+                  var theme = saved || 'dark';
                   document.documentElement.setAttribute('data-theme', theme);
                 } catch(e) {}
               })();
