@@ -159,9 +159,9 @@ function IssueContent({ params }) {
     }
   };
 
-  const openPrModal = async () => {
-    if (!prData) {
-      await loadPr();
+  const openPrModal = () => {
+    if (!prData && !loadingPr) {
+      loadPr();
     }
     setIsPrModalOpen(true);
   };
