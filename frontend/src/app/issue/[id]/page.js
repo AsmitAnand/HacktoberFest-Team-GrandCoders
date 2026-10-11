@@ -357,9 +357,12 @@ function IssueContent({ params }) {
 
                 <h3>Recommended Test Cases</h3>
                 {testsData.test_cases?.length > 0 ? (
-                  <ul>
+                  <ul className="nb-test-cases-list">
                     {testsData.test_cases.map((tc, i) => (
-                      <li key={i}>🧪 {tc}</li>
+                      <li key={i} className="nb-test-case-item">
+                        <span>🧪</span>
+                        <span>{tc}</span>
+                      </li>
                     ))}
                   </ul>
                 ) : (
@@ -367,9 +370,9 @@ function IssueContent({ params }) {
                 )}
 
                 {testsData.example_code && (
-                  <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <h3>Example Test Code</h3>
+                  <div className="nb-code-box-wrapper">
+                    <div className="nb-code-box-header">
+                      <span className="nb-code-box-title">⚡ Example Test Suite</span>
                       <button 
                         className={`copy-btn ${copiedTest ? 'copy-btn--copied' : ''}`}
                         onClick={copyTestCode}
@@ -377,10 +380,10 @@ function IssueContent({ params }) {
                         {copiedTest ? '✓ Copied!' : '📋 Copy Test Code'}
                       </button>
                     </div>
-                    <pre style={{ marginTop: '0.75rem', whiteSpace: 'pre-wrap' }}>
+                    <pre className="nb-code-block">
                       <code>{testsData.example_code}</code>
                     </pre>
-                  </>
+                  </div>
                 )}
               </>
             ) : (
@@ -421,9 +424,15 @@ function IssueContent({ params }) {
                   <strong>PR Title:</strong> <code>{prData.title}</code>
                 </div>
                 
-                <pre style={{ marginTop: '1rem', whiteSpace: 'pre-wrap' }}>
-                  <code>{prData.body}</code>
-                </pre>
+                <div className="nb-code-box-wrapper" style={{ marginTop: '1.25rem' }}>
+                  <div className="nb-code-box-header">
+                    <span className="nb-code-box-title">📄 Generated Pull Request Body</span>
+                    <span className="nb-code-box-meta">Ready for GitHub</span>
+                  </div>
+                  <pre className="nb-code-block">
+                    <code>{prData.body}</code>
+                  </pre>
+                </div>
               </>
             ) : (
               <p>Failed to generate PR.</p>

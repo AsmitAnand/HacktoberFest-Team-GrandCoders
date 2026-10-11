@@ -17,10 +17,11 @@ function AnalyzeContent() {
   // Search & Filter state (Issue #29)
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('ALL');
+  const [inputUrl, setInputUrl] = useState('');
 
   useEffect(() => {
     if (!repoUrl) {
-      router.push('/');
+      setLoading(false);
       return;
     }
 
@@ -166,6 +167,92 @@ function AnalyzeContent() {
       return titleMatch || bodyMatch || labelMatch || numberMatch;
     });
   }, [allIssues, searchQuery, selectedDifficulty]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (inputUrl.trim()) {
+      router.push(`/analyze?url=${encodeURIComponent(inputUrl.trim())}`);
+    }
+  };
+
+  if (!repoUrl) {
+    return (
+      <div className="container dashboard animate-fade-in" style={{ padding: '24px 28px' }}>
+        <Breadcrumbs items={[{ label: 'Repository Analyzer', href: null }]} />
+        
+        <div className="nb-card nb-analyzer-main" style={{ marginTop: '20px' }}>
+          <div className="nb-analyzer-main__header">
+            <span className="nb-tag-tech">AI REPOSITORY ENGINE</span>
+            <span className="nb-label-tracked">FEATURE 02: REPOSITORY ANALYZER</span>
+          </div>
+
+          <h1 className="nb-hero-headline" style={{ fontSize: '2.4rem', margin: '16px 0 10px' }}>
+            Repository Analyzer
+          </h1>
+          <p className="nb-hero-subtext" style={{ maxWidth: '680px', marginBottom: '24px' }}>
+            Scan any public GitHub repository to uncover beginner-friendly issues, tech stacks, and AI-generated step-by-step implementation roadmaps with Google Gemma 4.
+          </p>
+
+          <form className="nb-search-form" onSubmit={handleSearchSubmit}>
+            <div className="nb-search-input-box">
+              <span className="nb-search-icon" aria-hidden="true">🔍</span>
+              <input
+                type="text"
+                className="nb-search-input"
+                placeholder="https://github.com/adithyan-css/Brownie-Bliss or org/repo"
+                value={inputUrl}
+                onChange={(e) => setInputUrl(e.target.value)}
+                required
+                id="analyzer-input-repo"
+              />
+              <button
+                type="submit"
+                className="nb-search-submit-btn"
+                disabled={!inputUrl.trim()}
+              >
+                Scan Repository →
+              </button>
+            </div>
+          </form>
+
+          {/* Quick Preset Repos */}
+          <div style={{ marginTop: '32px' }}>
+            <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 800, marginBottom: '14px' }}>
+              ⚡ Featured Hacktoberfest Repositories:
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              {[
+                { name: 'adithyan-css/Brownie-Bliss', tag: '569 Issues • Bakery Web App (CSS/JS)', url: 'https://github.com/adithyan-css/Brownie-Bliss', icon: '🧁' },
+                { name: 'fastapi/fastapi', tag: 'High-perf Python Web Framework', url: 'https://github.com/fastapi/fastapi', icon: '⚡' },
+                { name: 'facebook/react', tag: 'The library for web and native user interfaces', url: 'https://github.com/facebook/react', icon: '⚛️' },
+                { name: 'vercel/next.js', tag: 'The React Framework for the Web', url: 'https://github.com/vercel/next.js', icon: '▲' },
+              ].map((p) => (
+                <button
+                  key={p.url}
+                  type="button"
+                  onClick={() => router.push(`/analyze?url=${encodeURIComponent(p.url)}`)}
+                  className="nb-card"
+                  style={{ 
+                    textAlign: 'left', 
+                    cursor: 'pointer', 
+                    padding: '16px',
+                    background: 'var(--nb-card-bg)',
+                    border: 'var(--nb-border)',
+                    boxShadow: 'var(--nb-shadow-sm)',
+                    transition: 'all var(--transition-fast)'
+                  }}
+                >
+                  <div style={{ fontSize: '1.6rem', marginBottom: '8px' }}>{p.icon}</div>
+                  <strong style={{ display: 'block', fontSize: '0.96rem', fontFamily: 'var(--font-display)' }}>{p.name}</strong>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--nb-text-muted)', display: 'block', marginTop: '4px' }}>{p.tag}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

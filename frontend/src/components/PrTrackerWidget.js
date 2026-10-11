@@ -41,7 +41,7 @@ export default function PrTrackerWidget({ onOpenPrModal }) {
               stroke="#0E43B9"
               strokeWidth="14"
             />
-            {/* Active completed segment */}
+            {/* Active completed segment with continuous breathe motion */}
             <circle
               cx="50"
               cy="50"
@@ -52,8 +52,28 @@ export default function PrTrackerWidget({ onOpenPrModal }) {
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="butt"
+              className="nb-gauge-progress-ring"
               transform="rotate(-90 50 50)"
             />
+            {/* Dynamic rotating energy marker on the gauge */}
+            <circle
+              cx="50"
+              cy="12"
+              r="3.5"
+              fill="#FFFFFF"
+              stroke="#000000"
+              strokeWidth="1.5"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="rotate"
+                from="0 50 50"
+                to="180 50 50"
+                dur="4s"
+                repeatCount="indefinite"
+                additive="sum"
+              />
+            </circle>
             {/* Inner & Outer Black Outlines for Neo-Brutalist Border Look */}
             <circle
               cx="50"

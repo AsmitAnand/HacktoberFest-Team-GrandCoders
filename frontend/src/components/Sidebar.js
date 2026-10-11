@@ -13,9 +13,9 @@ export default function Sidebar({ isOpen, onClose, onOpenCommandPalette }) {
   const navItems = [
     { number: '01', label: 'Dashboard', href: '/', icon: 'sq-red', id: 'nav-dashboard' },
     { number: '02', label: 'Analyzer', href: '/analyze', icon: 'dot-yellow', id: 'nav-analyzer' },
-    { number: '03', label: 'Pipeline Flow', href: '/#pipeline-flow', icon: null, id: 'nav-pipeline' },
-    { number: '04', label: 'First Issues', href: '/analyze?difficulty=BEGINNER', icon: 'sq-red', id: 'nav-first-issues' },
-    { number: '05', label: 'PR Tracker', href: '/#pr-tracker', icon: 'dot-yellow', id: 'nav-pr-tracker' },
+    { number: '03', label: 'Pipeline Flow', href: '/pipeline', icon: null, id: 'nav-pipeline' },
+    { number: '04', label: 'First Issues', href: '/first-issues', icon: 'sq-red', id: 'nav-first-issues' },
+    { number: '05', label: 'PR Tracker', href: '/tracker', icon: 'dot-yellow', id: 'nav-pr-tracker' },
   ];
 
   const handleConnect = () => {
@@ -33,8 +33,7 @@ export default function Sidebar({ isOpen, onClose, onOpenCommandPalette }) {
 
   const isActive = (item) => {
     if (item.href === '/') return pathname === '/';
-    if (item.href.startsWith('/analyze')) return pathname.startsWith('/analyze');
-    return false;
+    return pathname.startsWith(item.href);
   };
 
   return (

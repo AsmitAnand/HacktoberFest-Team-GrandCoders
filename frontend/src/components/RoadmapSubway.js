@@ -26,7 +26,7 @@ export default function RoadmapSubway() {
           <rect x="15" y="45" width="45" height="70" fill="#FFC72C" stroke="#000000" strokeWidth="2.5" />
           <path d="M35 55 Q45 80 25 105" stroke="#000000" strokeWidth="2.5" fill="none" />
 
-          {/* Yellow Track Path */}
+          {/* Base Yellow Track Path */}
           <path
             d="M50 95 H180 V40 H280 V95 H380 H440"
             stroke="#FFC72C"
@@ -35,18 +35,48 @@ export default function RoadmapSubway() {
             fill="none"
           />
 
-          {/* Red Track Path Offset */}
+          {/* Dynamic Laser Beam Stream */}
           <path
             d="M50 95 H180 V40 H280 V95 H380 H440"
             stroke="#FF5436"
             strokeWidth="4"
+            strokeDasharray="12 12"
             strokeLinecap="round"
             fill="none"
+            className="nb-track-laser"
           />
+
+          {/* Animated Traveling Subway Train / Energy Bead */}
+          <g>
+            <circle r="7" fill="#1047BF" stroke="#FFFFFF" strokeWidth="2.5">
+              <animateMotion
+                path="M50 95 H180 V40 H280 V95 H380 H440"
+                dur="5.5s"
+                repeatCount="indefinite"
+              />
+            </circle>
+            <circle r="3.5" fill="#FFC72C">
+              <animateMotion
+                path="M50 95 H180 V40 H280 V95 H380 H440"
+                dur="5.5s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          </g>
 
           {/* Station Nodes */}
           {steps.map((st) => (
             <g key={st.num} className="nb-station-node">
+              {/* Outer Pulsing Halo */}
+              <circle
+                cx={st.cx}
+                cy={st.cy}
+                r="18"
+                fill="none"
+                stroke="#FF5436"
+                strokeWidth="1.5"
+                className="nb-station-pulse-ring"
+              />
               {/* Outer Station Circle */}
               <circle
                 cx={st.cx}
