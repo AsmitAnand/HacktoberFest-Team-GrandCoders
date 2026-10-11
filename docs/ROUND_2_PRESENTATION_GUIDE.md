@@ -32,7 +32,7 @@ This guide outlines the complete 15-minute presentation, live walkthrough demo, 
 7. **Slide 7: Round 2 Progress & Continuous Velocity (4:15 - 4:45)**
    - *Message:* Worker threadpool concurrency, live Railway + Vercel deployment, Flake8 + Pytest CI/CD pipeline, and future GitHub App / IDE extension roadmap.
 8. **Slide 8: Team GrandCoders & Demo Handoff (4:45 - 5:00)**
-   - *Message:* Kartikeya, Khushhal, Asmit — seamless handoff to live demo.
+   - *Message:* Asmit Anand (Lead & Backend), Kartikeya Sorout (Frontend Lead), Khushhal Kumar Bansal (Full-Stack & DevOps) — seamless handoff to live demo.
 
 ---
 
